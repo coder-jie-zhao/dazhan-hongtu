@@ -1,0 +1,31 @@
+# 临时/调试产物（根目录的散落文件）
+/_*.txt
+/_*.tmp
+/_*.log
+/_extract.py
+
+# 一次性调试脚本
+/tools/_probe_page.py
+/tools/_seg.py
+/tools/_seg2.py
+
+# 服务器输出
+/server_out.txt
+/server_err.txt
+/v2/_server_out.txt
+/v2/_server_err.txt
+
+# 本地密钥（绝对不能提交）
+.env
+.env.*
+!.env.example
+
+# 依赖与系统
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+
+# 说明：v1 的 _probe.js / _shot*.js / _shots/ / _compose_hd.py / _不用了-二维码/
+#       是 v1 版本的一部分，已在 v1.0.0 提交中跟踪，**故意保留**。
+#       v2/_test.js 是 v2 的验收脚本，也保留。

@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>大展红途 v2 · 产品界面展示</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 2400px; height: 1350px; overflow: hidden; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    background: #0C0908;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .stage {
+    position: relative;
+    width: 2400px; height: 1350px;
+    padding: 74px 100px 60px;
+    display: flex; flex-direction: column;
+    background:
+      radial-gradient(60% 50% at 8% 4%, rgba(166, 43, 46, 0.30), transparent 62%),
+      radial-gradient(50% 45% at 96% 92%, rgba(200, 160, 99, 0.14), transparent 66%),
+      linear-gradient(150deg, #17100E 0%, #0C0908 52%, #120C0B 100%);
+  }
+  .stage::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .stage > * { position: relative; z-index: 1; }
+
+  .head { display: flex; align-items: flex-end; justify-content: space-between; }
+  .head-left { display: flex; align-items: center; gap: 26px; }
+  .logo-mark {
+    width: 78px; height: 78px; border-radius: 21px;
+    background: linear-gradient(160deg, #C4403C, #8A2224);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Noto Serif SC", serif; font-size: 40px; font-weight: 900;
+    box-shadow: 0 14px 40px rgba(166, 43, 46, 0.42), inset 0 0 0 2px rgba(255, 255, 255, 0.16);
+    position: relative;
+  }
+  .logo-mark::after {
+    content: ""; position: absolute; inset: -7px; border-radius: 26px;
+    border: 1px solid rgba(200, 160, 99, 0.5);
+  }
+  .title-block h1 {
+    font-family: "Noto Serif SC", serif; font-size: 60px; font-weight: 900;
+    letter-spacing: 10px; line-height: 1.1;
+  }
+  .title-block p {
+    margin-top: 8px; font-size: 22px; color: rgba(255, 255, 255, 0.52);
+    letter-spacing: 5px;
+  }
+  .head-right {
+    text-align: right; font-size: 18px; line-height: 1.85;
+    color: rgba(255, 255, 255, 0.4); letter-spacing: 1.5px;
+    padding-bottom: 6px;
+  }
+  .head-right b { color: rgba(200, 160, 99, 0.9); font-weight: 500; }
+
+  .body { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 36px; margin-top: 22px; }
+
+  .copy { width: 780px; flex: 0 0 auto; }
+  .copy .lead {
+    font-family: "Noto Serif SC", serif;
+    font-size: 37px; line-height: 1.6; font-weight: 700; color: rgba(255, 255, 255, 0.9);
+  }
+  .copy .lead em { color: #D9887F; font-style: normal; }
+  .rule { width: 88px; height: 3px; background: linear-gradient(90deg, #A62B2E, rgba(200,160,99,0.2)); margin: 26px 0 30px; }
+
+  .feat { display: flex; gap: 18px; margin-bottom: 22px; }
+  .feat-no {
+    font-family: "Noto Serif SC", serif; font-size: 28px; font-weight: 900;
+    color: rgba(200, 160, 99, 0.42); line-height: 1; flex: 0 0 auto; width: 48px;
+  }
+  .feat-tx h3 {
+    font-family: "Noto Serif SC", serif; font-size: 25px; font-weight: 700;
+    letter-spacing: 2px; margin-bottom: 6px;
+  }
+  .feat-tx p { font-size: 17px; line-height: 1.75; color: rgba(255, 255, 255, 0.46); }
+
+  /* 手机：用真实截图，比 iframe 缩放清晰 */
+  .phones { display: flex; gap: 30px; align-items: flex-start; }
+  .phone {
+    width: 396px; border-radius: 40px; padding: 10px;
+    background: linear-gradient(160deg, #3A3431, #131110 55%, #2A2523);
+    box-shadow:
+      0 40px 90px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.09),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    position: relative;
+  }
+  .phone:nth-child(2) {
+    box-shadow:
+      0 50px 110px rgba(0, 0, 0, 0.72),
+      0 0 0 1px rgba(200, 160, 99, 0.34),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+  .screen {
+    width: 376px; height: 812px; border-radius: 31px;
+    overflow: hidden; background: #FBF8F2; position: relative;
+  }
+  .screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .cap {
+    margin-top: 14px; text-align: center;
+    font-size: 14px; letter-spacing: 3px; color: rgba(255, 255, 255, 0.34);
+  }
+
+  .foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.09);
+    font-size: 15px; color: rgba(255, 255, 255, 0.3); letter-spacing: 2px;
+  }
+  .foot .tags { display: flex; gap: 12px; }
+  .tag {
+    padding: 6px 16px; border-radius: 30px; font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14); color: rgba(255, 255, 255, 0.5);
+  }
+
+  body.light { background: #F7F2EA; color: #1A1A1A; }
+  body.light .stage {
+    background:
+      radial-gradient(58% 48% at 6% 3%, rgba(166, 43, 46, 0.10), transparent 62%),
+      radial-gradient(50% 45% at 97% 94%, rgba(200, 160, 99, 0.20), transparent 66%),
+      linear-gradient(150deg, #FDFAF5 0%, #F8F3EB 52%, #F2EBE0 100%);
+  }
+  body.light .stage::before {
+    background-image:
+      linear-gradient(rgba(26, 26, 26, 0.032) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26, 26, 26, 0.032) 1px, transparent 1px);
+  }
+  body.light .title-block h1 { color: #1A1A1A; }
+  body.light .title-block p { color: #6B7280; }
+  body.light .head-right { color: #9A938A; }
+  body.light .head-right b { color: #A62B2E; }
+  body.light .copy .lead { color: #221F1C; }
+  body.light .copy .lead em { color: #A62B2E; }
+  body.light .feat-no { color: rgba(166, 43, 46, 0.4); }
+  body.light .feat-tx h3 { color: #1A1A1A; }
+  body.light .feat-tx p { color: #6B7280; }
+  body.light .phone {
+    background: linear-gradient(160deg, #F3EDE4, #DCD5C9 55%, #C9C1B5);
+    box-shadow:
+      0 34px 70px rgba(60, 45, 30, 0.18),
+      0 0 0 1px rgba(26, 26, 26, 0.09),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+  }
+  body.light .phone:nth-child(2) {
+    box-shadow:
+      0 42px 90px rgba(60, 45, 30, 0.22),
+      0 0 0 1.5px rgba(166, 43, 46, 0.32),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+  }
+  body.light .cap { color: #9A938A; }
+  body.light .foot { border-top-color: rgba(26, 26, 26, 0.1); color: #9A938A; }
+  body.light .tag { border-color: rgba(26, 26, 26, 0.13); color: #6B7280; }
+  body.light .logo-mark {
+    box-shadow: 0 12px 30px rgba(166, 43, 46, 0.26), inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="head">
+    <div class="head-left">
+      <div class="logo-mark">展</div>
+      <div class="title-block">
+        <h1>大展红途</h1>
+        <p>井冈山红色研学智能导览系统</p>
+      </div>
+    </div>
+    <div class="head-right">
+      黄洋界 · 八角楼 · 龙江书院<br />
+      <b>37</b> 条已审核史料 · <b>3</b> 个点位 · <b>34</b> 项检索验收
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="copy">
+      <p class="lead">
+        把「听讲解」变成<em>「自己找答案」</em>。<br />
+        讲解、任务、报告，走完一个完整闭环。
+      </p>
+      <div class="rule"></div>
+
+      <div class="feat">
+        <div class="feat-no">01</div>
+        <div class="feat-tx">
+          <h3>史料锚定问答</h3>
+          <p>答案只从已审核史料里检索生成，注明出处；超范围明确拒答。检索与拒答共 34 项验收用例，当场可重跑。</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-no">02</div>
+        <div class="feat-tx">
+          <h3>现场任务闭环</h3>
+          <p>看·想·理·说四题绑定现场，任务单按学段生成，完成才解锁报告——把「逛一圈」变成「做一遍」。</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-no">03</div>
+        <div class="feat-tx">
+          <h3>可解释的研学报告</h3>
+          <p>评分规则公开、可逐项复核，不用模型打分；教师端用匿名编号，看班级不看个体。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phones">
+      <div class="phone">
+        <div class="screen"><img src="v2/PPT素材/02-手机框-首页.png" alt="" /></div>
+        <div class="cap">入口 · 三点位路线</div>
+      </div>
+      <div class="phone">
+        <div class="screen"><img src="v2/PPT素材/02-手机框-对话.png" alt="" /></div>
+        <div class="cap">AI 对话 · 三种身份</div>
+      </div>
+      <div class="phone">
+        <div class="screen"><img src="v2/PPT素材/02-手机框-报告.png" alt="" /></div>
+        <div class="cap">研学报告 · 可解释评分</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="tags">
+      <span class="tag">史料锚定</span>
+      <span class="tag">超纲拒答</span>
+      <span class="tag">任务闭环</span>
+      <span class="tag">可解释评分</span>
+      <span class="tag">匿名化留痕</span>
+    </div>
+    <div>大展红途 · 产品界面</div>
+  </div>
+</div>
+<script>
+  if (new URLSearchParams(location.search).get("theme") === "light") {
+    document.body.classList.add("light");
+  }
+</script>
+</body>
+</html>

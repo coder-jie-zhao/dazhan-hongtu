@@ -1,7 +1,0 @@
-﻿git => C:\Program Files\Git\cmd\git.exe
-gh => C:\Users\Lenovo\AppData\Local\gh-cli\bin\gh.exe
-curl => 
---- git version ---
---- gh version ---
---- git config ---
---- repo? ---

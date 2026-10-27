@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#7C1C1F" />
+<meta name="description" content="大展红途 · 井冈山红色研学智能导览系统" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<title>大展红途 · 井冈山红色研学智能导览</title>
+<link rel="stylesheet" href="styles/tokens.css" />
+<link rel="stylesheet" href="styles/base.css" />
+<link rel="stylesheet" href="styles/views.css" />
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ==================== V1 入口 / 路线 ==================== -->
+  <section class="view" id="view-home">
+    <div class="home-hero" id="home-hero">
+      <img class="home-hero-img" id="home-hero-img" src="assets/img/hyj-04.jpg" alt="" />
+      <div class="home-hero-scrim"></div>
+
+      <div class="home-nav">
+        <span class="home-nav-brand">大展红途</span>
+        <span class="home-nav-tag" id="home-nav-tag">井冈山 · 3 个点位</span>
+      </div>
+
+      <div class="home-hero-copy">
+        <span class="eyebrow" style="color:var(--gold-400)">红色研学 · 智能导览</span>
+        <h1 class="title-xl" id="home-title">三处旧址<br />一堂行走的课</h1>
+        <p class="home-hero-sub" id="home-sub">AI 讲解员 · 现场任务 · 可解释的研学报告</p>
+      </div>
+
+      <div class="home-scroll-hint" aria-hidden="true"><span></span></div>
+    </div>
+
+    <div class="home-stats" id="home-stats"></div>
+
+    <div class="page">
+      <div class="route-list" id="route-list"></div>
+
+      <div class="home-cta" id="home-cta"></div>
+
+      <div class="home-tools" id="home-tools"></div>
+
+      <p class="home-foot">
+        史料取自中国军网、央视网、共产党员网、人民网与井冈山革命博物馆官网公开资料
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================== V2 点位详情 ==================== -->
+  <section class="view" id="view-point">
+    <div class="point-hero" id="point-hero">
+      <img class="point-hero-img" id="point-hero-img" src="" alt="" />
+      <div class="point-hero-scrim"></div>
+      <button class="point-back-float back" data-act="home" aria-label="返回"></button>
+      <div class="point-hero-overlay">
+        <span class="point-subtitle" id="point-subtitle">教学点位 01</span>
+        <h2 class="point-title" id="point-title">黄洋界哨口</h2>
+        <p class="point-brief" id="point-brief"></p>
+      </div>
+    </div>
+
+    <div class="point-locate" id="point-locate">
+      <span class="locate-dot"></span>
+      <span id="locate-text">正在核对点位…</span>
+    </div>
+
+    <div class="page">
+      <div class="card-swiper">
+        <div class="card-track" id="point-cards"></div>
+        <div class="swiper-dots" id="point-dots"></div>
+      </div>
+
+      <div class="point-photos" id="point-photos"></div>
+
+      <div class="point-actions">
+        <button class="btn btn-primary" data-act="chat">问 AI · 三种身份回答</button>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-act="task">做任务</button>
+          <button class="btn btn-ghost" data-act="guide">看讲解词</button>
+        </div>
+      </div>
+
+      <div class="point-flow">
+        <div class="flow-title">本次研学 · 三个环节</div>
+        <div class="flow-steps">
+          <div class="flow-step"><b>问</b>AI 讲解<br />三种身份</div>
+          <div class="flow-step"><b>做</b>现场任务<br />看·想·理·说</div>
+          <div class="flow-step"><b>得</b>研学报告<br />可解释评分</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== V3 AI 对话 ==================== -->
+  <section class="view" id="view-chat">
+    <header class="sub-header">
+      <button class="back" data-act="point" aria-label="返回"></button>
+      <h2 class="sub-title">问 AI</h2>
+      <span class="sub-spacer"></span>
+      <button class="sub-action" id="btn-clear-chat">清空</button>
+    </header>
+
+    <div class="role-bar" id="role-bar"></div>
+
+    <div class="ai-mode" id="ai-mode">
+      <span class="ai-mode-dot"></span>
+      <span id="ai-mode-text">正在识别回答来源…</span>
+    </div>
+
+    <div class="chat-body" id="chat-body">
+      <div class="chat-hint" id="chat-hint">
+        <p class="title-sm">选一个身份，问问当年的事。</p>
+        <p class="tiny dimmer mt-2">每个回答下方都会标出史料出处。超出已审核史料范围的问题，它会直接拒答。</p>
+      </div>
+    </div>
+
+    <div class="suggestions" id="suggestions"></div>
+
+    <div class="chat-input">
+      <input type="text" id="chat-input" placeholder="想问点什么…" autocomplete="off" enterkeyhint="send" />
+      <button class="send-btn" id="chat-send" aria-label="发送">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ==================== V4 现场任务 ==================== -->
+  <section class="view" id="view-task">
+    <header class="sub-header">
+      <button class="back" data-act="point" aria-label="返回"></button>
+      <h2 class="sub-title">做任务</h2>
+      <span class="sub-spacer"></span>
+      <span class="sub-action" id="task-grade-badge">初中</span>
+    </header>
+
+    <div class="task-progress" id="task-progress"></div>
+
+    <div class="task-body" id="task-body"></div>
+
+    <div class="task-footer">
+      <button class="btn btn-report" id="btn-report" disabled>完成全部任务后解锁</button>
+    </div>
+  </section>
+
+  <!-- ==================== V5 研学报告 ==================== -->
+  <section class="view" id="view-report">
+    <header class="sub-header">
+      <button class="back" data-act="task" aria-label="返回"></button>
+      <h2 class="sub-title">研学报告</h2>
+      <span class="sub-spacer"></span>
+      <button class="sub-action" id="btn-share-report">分享</button>
+    </header>
+
+    <div class="report-wrap">
+      <div class="report-card" id="report-card">
+        <i class="rpt-corner tl"></i><i class="rpt-corner tr"></i>
+        <i class="rpt-corner bl"></i><i class="rpt-corner br"></i>
+
+        <div class="rpt-head">
+          <div class="rpt-logo">大展红途 · 研学实践报告</div>
+          <div class="rpt-point"><span id="rpt-point">黄洋界哨口</span> · <span id="rpt-date"></span></div>
+        </div>
+
+        <div class="rpt-name-row">
+          <span class="rpt-name" id="rpt-name"></span>
+          <span class="rpt-school" id="rpt-school"></span>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">学习轨迹</div>
+          <div class="rpt-meta" id="rpt-meta"></div>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">能力评估</div>
+          <div id="rpt-bars"></div>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">我提的问题</div>
+          <ul class="rpt-questions" id="rpt-questions"></ul>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">我的思考</div>
+          <div class="rpt-thought" id="rpt-thought"></div>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">研学评语</div>
+          <div class="rpt-comment" id="rpt-comment"></div>
+        </div>
+
+        <div class="rpt-foot">
+          <span class="rpt-brand">大展红途</span>
+          <span class="rpt-no" id="rpt-no">编号 DZHT-2026-0000</span>
+        </div>
+        <div class="rpt-seal" aria-hidden="true"><span>研学</span><span>认证</span></div>
+      </div>
+
+      <div class="rpt-formula" id="rpt-formula"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-save">保存报告图片</button>
+        <button class="btn btn-ghost" id="btn-to-teacher">班级视图</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== V6 教师端 ==================== -->
+  <section class="view" id="view-teacher">
+    <header class="sub-header">
+      <button class="back" data-act="home" aria-label="返回"></button>
+      <h2 class="sub-title">教师端</h2>
+      <span class="sub-spacer"></span>
+      <span class="sub-action">演示数据</span>
+    </header>
+
+    <div class="page">
+      <div class="teacher-export" id="teacher-export">
+        <div class="teacher-title">大展红途 · 班级研学数据</div>
+        <div class="tch-stats" id="tch-stats"></div>
+        <div class="teacher-summary" id="teacher-summary"></div>
+
+        <div class="tch-block">
+          <div class="tch-block-title">高频疑问 · 下一次讲什么</div>
+          <div id="tch-hot"></div>
+        </div>
+
+        <div class="tch-block">
+          <div class="tch-block-title">逐人明细<span class="sec-extra">姓名已替换为学校生成的匿名编号</span></div>
+          <div class="table-scroll">
+            <table class="teacher-table">
+              <thead><tr><th>匿名编号</th><th>点位</th><th>任务</th><th>提问</th><th>用时</th></tr></thead>
+              <tbody id="teacher-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tch-block">
+          <div class="tch-block-title">任务单生成器</div>
+          <div class="taskgen">
+            <div class="taskgen-row">
+              <label class="taskgen-label">学段</label>
+              <div class="taskgen-seg" id="tg-grade"></div>
+            </div>
+            <div class="taskgen-row">
+              <label class="taskgen-label">点位</label>
+              <div class="taskgen-seg" id="tg-point"></div>
+            </div>
+          </div>
+          <div class="taskgen-out" id="tg-out"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="btn-export">导出班级报告</button>
+
+      <div class="teacher-tip">
+        <b>这份数据能回答什么</b>
+        哪个点位学生问得最多、哪道题最容易错、哪个说法需要老师现场补讲。
+        <br /><br />
+        <b>隐私设计</b>
+        明细表中的人名由学校生成的匿名编号替代，编号与真实身份的映射表由学校保管，
+        系统侧不建立、不存储这个映射关系。
+      </div>
+
+      <div class="teacher-tools" id="teacher-tools"></div>
+    </div>
+  </section>
+
+  <!-- ==================== V7 内容审核管线 ==================== -->
+  <section class="view" id="view-audit">
+    <header class="sub-header">
+      <button class="back" data-act="home" aria-label="返回"></button>
+      <h2 class="sub-title">内容审核管线</h2>
+      <span class="sub-spacer"></span>
+      <span class="sub-action" id="audit-count"></span>
+    </header>
+
+    <div class="page">
+      <div class="audit-intro">
+        <p class="lede">红色内容的特殊性在于，任何史实错误都不只是产品缺陷，而是政治风险。红途把内容安全设计为<b>架构层面的约束</b>，而非事后检查项。</p>
+      </div>
+
+      <div class="audit-pipeline" id="audit-pipeline"></div>
+
+      <div class="sec-title">语料库<span class="sec-extra">每条均可追溯到公开出处</span></div>
+      <div class="audit-filters" id="audit-filters"></div>
+      <div class="audit-list" id="audit-list"></div>
+    </div>
+  </section>
+
+  <!-- ==================== V8 检索自测台 ==================== -->
+  <section class="view" id="view-selftest">
+    <header class="sub-header">
+      <button class="back" data-act="home" aria-label="返回"></button>
+      <h2 class="sub-title">检索验收自测</h2>
+      <span class="sub-spacer"></span>
+      <button class="sub-action" id="btn-run-test">一键重跑</button>
+    </header>
+
+    <div class="page">
+      <div class="test-summary" id="test-summary"></div>
+      <div class="test-bar-wrap">
+        <div class="bar-track"><span class="bar-fill" id="test-bar" style="background:linear-gradient(90deg,#1F7A44,#4FB377)"></span></div>
+        <div class="test-legend">
+          <span><i style="background:#2E9E5B"></i>应答类 <b id="test-answer-n">0</b></span>
+          <span><i style="background:#A62B2E"></i>拒答类 <b id="test-refuse-n">0</b></span>
+          <span><i style="background:#BFC5CD"></i>失败 <b id="test-fail-n">0</b></span>
+        </div>
+      </div>
+
+      <div class="sec-title">用例明细<span class="sec-extra" id="test-threshold"></span></div>
+      <div class="test-list" id="test-list"></div>
+
+      <div class="teacher-tip">
+        <b>这套用例的价值</b>
+        不在「通过」两个字，而在它暴露过真实缺陷。最早的检索层用纯关键词匹配，
+        「朱德为什么挑粮」因为共享「朱德」二字而错误命中纪念碑条目——
+        这类错误在演示中很难被肉眼发现，只有用例能抓住。
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== V9 AR 规划 ==================== -->
+  <section class="view" id="view-ar">
+    <header class="sub-header">
+      <button class="back" data-act="home" aria-label="返回"></button>
+      <h2 class="sub-title">AR 实景导览</h2>
+      <span class="sub-spacer"></span>
+      <span class="badge badge-amber">方案设计阶段</span>
+    </header>
+
+    <div class="page">
+      <div class="ar-notice">
+        <div class="ar-notice-title">本模块尚未进入原型</div>
+        <p class="tiny dim">按项目计划书，AR 模块当前处于方案设计阶段，<b>没有进入原型</b>。此处如实展示规划内容与当前进度，不做「已实现」的假象。</p>
+      </div>
+
+      <div class="ar-hero" id="ar-hero"></div>
+
+      <div class="sec-title">场景规划</div>
+      <div class="ar-list" id="ar-list"></div>
+
+      <div class="sec-title">技术路径</div>
+      <div class="card card-bar" style="padding-left:18px">
+        <p class="tiny">标识码定位 → 场景模型加载 → 视角跟随</p>
+        <p class="tiny dimmer mt-2">不依赖 SLAM 级别的空间建图。内容侧由团队完成场景建模与素材配置，底层引擎外采。复杂度控制在 2–3 个关键视角的历史还原，不做全场景三维重建。</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ==================== 模态 ==================== -->
+<div class="modal" id="onboard">
+  <div class="modal-mask" data-close="onboard"></div>
+  <div class="modal-card">
+    <h3 class="modal-title">欢迎来到井冈山</h3>
+    <p class="modal-sub">先认识一下，之后不再重复问</p>
+    <input class="modal-input" type="text" id="inp-name" placeholder="你的姓名" maxlength="12" autocomplete="off" />
+    <input class="modal-input" type="text" id="inp-school" placeholder="你的学校" maxlength="24" autocomplete="off" />
+    <div class="grade-pick" id="onboard-grade"></div>
+    <button class="btn btn-primary" id="btn-onboard">开始研学</button>
+    <p class="micro dimmer center">我们不采集你的手机号，也不留存照片。</p>
+  </div>
+</div>
+
+<div class="modal" id="guide-modal">
+  <div class="modal-mask" data-close="guide-modal"></div>
+  <div class="modal-card">
+    <h3 class="modal-title" id="guide-title">讲解词</h3>
+    <div class="guide-text" id="guide-text"></div>
+    <button class="btn btn-primary" data-close="guide-modal">知道了</button>
+  </div>
+</div>
+
+<div class="modal" id="save-modal">
+  <div class="modal-mask" data-close="save-modal"></div>
+  <div class="modal-card">
+    <h3 class="modal-title">长按图片保存</h3>
+    <img class="save-img" id="save-img" alt="研学报告" />
+    <button class="btn btn-primary" data-close="save-modal">关闭</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/core/store.js"></script>
+<script src="js/core/motion.js"></script>
+<script src="js/core/router.js"></script>
+<script src="js/core/net.js"></script>
+<script src="js/domain/retrieval.js"></script>
+<script src="js/domain/scoring.js"></script>
+<script src="js/domain/taskgen.js"></script>
+<script src="js/domain/prompt.js"></script>
+<script src="js/domain/cases.js"></script>
+<script src="data/corpus.fallback.js"></script>
+<script src="js/views/home.js"></script>
+<script src="js/views/point.js"></script>
+<script src="js/views/chat.js"></script>
+<script src="js/views/task.js"></script>
+<script src="js/views/report.js"></script>
+<script src="js/views/teacher.js"></script>
+<script src="js/views/audit.js"></script>
+<script src="js/views/selftest.js"></script>
+<script src="js/views/ar.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
