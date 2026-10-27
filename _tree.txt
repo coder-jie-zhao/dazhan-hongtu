@@ -1,0 +1,73 @@
+﻿=== ROOT ===
+d-----	.claude
+d-----	api
+d-----	data
+d-----	PPT素材
+d-----	_shots
+d-----	_不用了-二维码
+-a----	.env.example
+-a----	app.js
+-a----	frame.html
+-a----	html2canvas.min.js
+-a----	index.html
+-a----	package.json
+-a----	server.js
+-a----	showcase.html
+-a----	styles.css
+-a----	_compose_hd.py
+-a----	_docfig.html
+-a----	_probe.js
+-a----	_shot.js
+-a----	_shot_docfig.js
+-a----	_shot_frame.js
+-a----	_shot_showcase.js
+-a----	启动说明.md
+-a----	大展红途_Demo开发需求书.md
+-a----	截图与PPT用法.md
+=== api ===
+chat.js
+comment.js
+=== data ===
+corpus.json 13304 bytes
+fallback.json 4034 bytes
+points.json 611 bytes
+tasks.json 852 bytes
+=== PPT素材 ===
+手机框
+01-产品界面总览-浅色（推荐）.png
+01-产品界面总览-深色.png
+02-入口页.png
+03-点位详情.png
+04-AI对话.png
+05-现场任务-首屏.png
+06-现场任务-全程.png
+07-研学报告.png
+08-教师端.png
+=== _shots ===
+01-首页.png
+02-点位详情.png
+03-AI对话.png
+04-现场任务-首屏.png
+04b-现场任务-全程.png
+05-研学报告.png
+06-教师端.png
+PPT-产品界面-浅色版.png
+PPT-产品界面-深色版.png
+=== line counts ===
+D:\大展红途\api\chat.js	185 lines	10117 bytes
+D:\大展红途\api\comment.js	53 lines	2671 bytes
+D:\大展红途\_不用了-二维码\_make_qr.py	85 lines	3858 bytes
+D:\大展红途\app.js	742 lines	35164 bytes
+D:\大展红途\frame.html	38 lines	1142 bytes
+D:\大展红途\html2canvas.min.js	18 lines	198689 bytes
+D:\大展红途\index.html	415 lines	21872 bytes
+D:\大展红途\server.js	171 lines	7884 bytes
+D:\大展红途\showcase.html	249 lines	9898 bytes
+D:\大展红途\styles.css	784 lines	33687 bytes
+D:\大展红途\_compose_hd.py	43 lines	2124 bytes
+D:\大展红途\_docfig.html	136 lines	8846 bytes
+D:\大展红途\_probe.js	38 lines	2074 bytes
+D:\大展红途\_shot.js	61 lines	3180 bytes
+D:\大展红途\_shot_docfig.js	25 lines	1129 bytes
+D:\大展红途\_shot_frame.js	37 lines	1653 bytes
+D:\大展红途\_shot_showcase.js	33 lines	1455 bytes

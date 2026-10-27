@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#7C1C1F" />
+<title>大展红途 · 井冈山红色研学</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+
+  <!-- ======================= V1 入口页 ======================= -->
+  <section class="view active" id="view-home">
+    <div class="home-hero">
+      <div class="home-hero-art">
+        <svg viewBox="0 0 430 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="h-sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0A1120"/>
+              <stop offset="20%" stop-color="#182540"/>
+              <stop offset="40%" stop-color="#3C4459"/>
+              <stop offset="56%" stop-color="#6E5350"/>
+              <stop offset="70%" stop-color="#A06C4C"/>
+              <stop offset="82%" stop-color="#CB8D5B"/>
+              <stop offset="92%" stop-color="#E2AE75"/>
+              <stop offset="100%" stop-color="#EFC894"/>
+            </linearGradient>
+            <linearGradient id="h-far" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7F8A9C"/><stop offset="100%" stop-color="#5E6878"/>
+            </linearGradient>
+            <linearGradient id="h-mid" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3D4B5C"/><stop offset="100%" stop-color="#232E3C"/>
+            </linearGradient>
+            <linearGradient id="h-near" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#182029"/><stop offset="100%" stop-color="#080D13"/>
+            </linearGradient>
+            <radialGradient id="h-sun" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFD9A0" stop-opacity="0.95"/>
+              <stop offset="45%" stop-color="#F0A860" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#E08A4A" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="h-blur"><feGaussianBlur stdDeviation="9"/></filter>
+            <filter id="h-blur2"><feGaussianBlur stdDeviation="20"/></filter>
+          </defs>
+
+          <rect width="430" height="560" fill="url(#h-sky)"/>
+          <circle cx="306" cy="300" r="104" fill="url(#h-sun)"/>
+          <circle cx="306" cy="300" r="26" fill="#FFE9CB" opacity="0.6" filter="url(#h-blur)"/>
+
+          <!-- 云层 -->
+          <g opacity="0.26" filter="url(#h-blur2)">
+            <ellipse cx="120" cy="268" rx="150" ry="8" fill="#FFD9B0"/>
+            <ellipse cx="340" cy="252" rx="130" ry="6" fill="#FFC79A"/>
+            <ellipse cx="230" cy="288" rx="200" ry="5" fill="#FFF0DC"/>
+          </g>
+
+          <!-- 远山（逆光描边） -->
+          <path fill="url(#h-far)" opacity="0.9" stroke="#F7C88F" stroke-opacity="0.32" stroke-width="1.1"
+            stroke-linejoin="round"
+            d="M0,346 L48,300 L86,330 L152,272 L206,312 L268,282 L320,318 L376,286 L430,314 L430,560 L0,560 Z"/>
+          <!-- 中山 -->
+          <path fill="url(#h-mid)" opacity="0.97" stroke="#EFAE72" stroke-opacity="0.24" stroke-width="1.1"
+            stroke-linejoin="round"
+            d="M0,392 L52,344 L92,376 L160,320 L214,360 L272,330 L326,368 L384,336 L430,366 L430,560 L0,560 Z"/>
+          <!-- 近山 -->
+          <path fill="url(#h-near)" stroke-linejoin="round"
+            d="M0,452 L56,414 L104,444 L168,398 L224,436 L286,406 L340,440 L396,414 L430,436 L430,560 L0,560 Z"/>
+
+          <!-- 松林剪影 -->
+          <g fill="#080D13" opacity="0.94">
+            <path d="M64,442 l7,-26 l7,26 z"/><path d="M80,448 l6,-20 l6,20 z"/>
+            <path d="M98,436 l8,-30 l8,30 z"/><path d="M120,444 l6,-22 l6,22 z"/>
+            <path d="M304,438 l8,-28 l8,28 z"/><path d="M324,444 l6,-20 l6,20 z"/>
+            <path d="M344,432 l8,-30 l8,30 z"/><path d="M366,440 l6,-22 l6,22 z"/>
+          </g>
+
+          <!-- 雾带 -->
+          <g class="hero-mist">
+            <path fill="#FFFFFF" opacity="0.13" filter="url(#h-blur)"
+              d="M0,366 Q110,352 215,364 T430,358 L430,392 Q300,380 200,390 T0,384 Z"/>
+            <path fill="#FFE7CE" opacity="0.14" filter="url(#h-blur)"
+              d="M0,416 Q130,404 250,416 T430,410 L430,440 Q280,430 150,440 T0,436 Z"/>
+          </g>
+
+          <!-- 飞鸟 -->
+          <g stroke="#0B1119" stroke-width="1.6" fill="none" opacity="0.55" stroke-linecap="round">
+            <path d="M150,214 q5,-5 10,0 q5,-5 10,0"/>
+            <path d="M182,200 q4,-4 8,0 q4,-4 8,0"/>
+          </g>
+        </svg>
+      </div>
+      <div class="hero-veil"></div>
+
+      <div class="home-nav">
+        <span class="home-nav-brand">大展红途</span>
+        <span class="home-nav-tag">井冈山 · 试点点位</span>
+      </div>
+
+      <div class="hero-point-chip">
+        <span class="dot"></span>黄洋界哨口 · 海拔 1343 米
+      </div>
+
+      <div class="home-hero-copy">
+        <span class="hero-eyebrow">红色研学 · 智能导览</span>
+        <h1 class="hero-title">一处点位<br/>一段来路</h1>
+        <p class="hero-sub">AI 讲解员 · 现场任务 · 可解释的研学报告</p>
+      </div>
+    </div>
+
+    <div class="home-stats">
+      <div class="stat"><b>18</b><span>条已审核史料</span></div>
+      <div class="stat"><b>3</b><span>种对话身份</span></div>
+      <div class="stat"><b>3</b><span>项现场任务</span></div>
+    </div>
+
+    <main class="home-main">
+      <button class="btn btn-primary btn-lg" id="btn-start">开始研学</button>
+
+      <div class="route-card">
+        <div class="route-head">
+          <span class="route-title">本次研学路线</span>
+          <span class="route-hint">已开放 <b>1</b> 个点位</span>
+        </div>
+        <div class="route-points">
+          <span class="route-item on">黄洋界</span>
+          <span class="route-sep">/</span>
+          <span class="route-item">八角楼</span>
+          <span class="route-sep">/</span>
+          <span class="route-item">革命博物馆</span>
+        </div>
+      </div>
+
+      <button class="link" id="btn-home-brief" style="align-self:center">先听听这一处的讲解词</button>
+    </main>
+
+    <footer class="home-footer">大展红途 · 井冈山红色研学智能导览系统</footer>
+  </section>
+
+  <!-- ======================= V2 点位页 ======================= -->
+  <section class="view" id="view-point">
+    <div class="point-hero">
+      <button class="point-back-float" data-nav="home">‹</button>
+      <svg class="hero-art" viewBox="0 0 430 380" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="p-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0C1420"/><stop offset="38%" stop-color="#28394E"/>
+            <stop offset="66%" stop-color="#6E5B53"/><stop offset="86%" stop-color="#B07747"/>
+            <stop offset="100%" stop-color="#CE8B54"/>
+          </linearGradient>
+          <linearGradient id="p-far" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#54657C"/><stop offset="100%" stop-color="#37475B"/>
+          </linearGradient>
+          <linearGradient id="p-mid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2A3847"/><stop offset="100%" stop-color="#1B2531"/>
+          </linearGradient>
+          <linearGradient id="p-near" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#121A24"/><stop offset="100%" stop-color="#080C12"/>
+          </linearGradient>
+          <radialGradient id="p-sun" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FFDCAB" stop-opacity="0.92"/>
+            <stop offset="50%" stop-color="#EF9F57" stop-opacity="0.38"/>
+            <stop offset="100%" stop-color="#E08A4A" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="p-blur"><feGaussianBlur stdDeviation="8"/></filter>
+          <filter id="p-blur2"><feGaussianBlur stdDeviation="18"/></filter>
+        </defs>
+
+        <rect width="430" height="380" fill="url(#p-sky)"/>
+        <circle cx="300" cy="232" r="82" fill="url(#p-sun)"/>
+        <circle cx="300" cy="232" r="26" fill="#FFE3B8" opacity="0.5" filter="url(#p-blur)"/>
+
+        <g opacity="0.2" filter="url(#p-blur2)">
+          <ellipse cx="130" cy="212" rx="140" ry="8" fill="#FFD3A8"/>
+          <ellipse cx="330" cy="200" rx="120" ry="6" fill="#FFC79A"/>
+        </g>
+
+        <path fill="url(#p-far)" opacity="0.7" stroke-linejoin="round"
+          d="M0,262 L22,246 L40,254 L70,220 L92,240 L124,230 L150,202 L176,232 L204,220 L230,242 L266,212 L290,234 L314,224 L340,204 L366,232 L394,222 L418,238 L430,230 L430,380 L0,380 Z"/>
+        <path fill="url(#p-mid)" opacity="0.95" stroke-linejoin="round"
+          d="M0,296 L28,278 L52,290 L84,260 L108,280 L136,268 L160,240 L186,270 L212,258 L240,278 L272,250 L296,274 L320,264 L346,244 L372,272 L398,260 L422,276 L430,270 L430,380 L0,380 Z"/>
+        <path fill="url(#p-near)" stroke-linejoin="round"
+          d="M0,332 L34,318 L66,328 L100,308 L130,324 L162,314 L196,294 L228,320 L258,310 L290,322 L322,302 L352,324 L382,314 L408,326 L430,318 L430,380 L0,380 Z"/>
+
+        <g fill="#0A0F16" opacity="0.9">
+          <path d="M56,322 l6,-22 l6,22 z"/><path d="M70,328 l5,-17 l5,17 z"/>
+          <path d="M88,316 l7,-26 l7,26 z"/>
+          <path d="M330,318 l7,-24 l7,24 z"/><path d="M350,324 l5,-17 l5,17 z"/>
+          <path d="M368,312 l7,-26 l7,26 z"/>
+        </g>
+
+        <g class="hero-mist">
+          <path fill="#FFFFFF" opacity="0.11" filter="url(#p-blur)"
+            d="M0,300 Q118,288 226,300 T430,294 L430,326 Q302,314 196,324 T0,318 Z"/>
+        </g>
+        <g class="hero-cloud" opacity="0.12" filter="url(#p-blur2)">
+          <ellipse cx="140" cy="270" rx="130" ry="7" fill="#fff"/>
+          <ellipse cx="340" cy="258" rx="120" ry="6" fill="#fff"/>
+        </g>
+      </svg>
+
+      <div class="point-hero-overlay">
+        <span class="point-subtitle" id="point-subtitle">教学点位 01</span>
+        <h2 class="point-title" id="point-title">黄洋界哨口</h2>
+        <p class="point-brief-line">1928.8.30 · 以不足一个营击退敌军四个团</p>
+      </div>
+    </div>
+
+    <div class="point-locate" id="point-locate">
+      <span class="locate-dot"></span>
+      <span id="locate-text">定位中…</span>
+    </div>
+
+    <div class="info-cards" id="info-cards"></div>
+
+    <div class="point-actions">
+      <button class="btn btn-primary" data-nav="chat">问 AI · 三种身份回答</button>
+      <button class="btn btn-secondary" data-nav="task">做任务 · 三题现场探究</button>
+      <button class="link" id="btn-brief">看讲解词</button>
+    </div>
+
+    <div class="point-flow">
+      <div class="flow-title">本次研学 · 三个环节</div>
+      <div class="flow-steps">
+        <div class="flow-step"><b>问</b>AI 讲解<br>三种身份</div>
+        <div class="flow-step"><b>做</b>现场任务<br>看·想·理</div>
+        <div class="flow-step"><b>得</b>研学报告<br>可解释评分</div>
+      </div>
+    </div>
+
+    <p class="point-foot-note">史料均取自中国军网、央视网、共产党员网公开资料</p>
+  </section>
+
+  <!-- ======================= V3 AI 对话页 ======================= -->
+  <section class="view" id="view-chat">
+    <header class="sub-header">
+      <button class="back" data-nav="point">‹</button>
+      <h2 class="sub-title">问 AI</h2>
+      <span class="sub-spacer"></span>
+    </header>
+
+    <div class="role-bar" id="role-bar">
+      <button class="chip active" data-role="讲解员">讲解员</button>
+      <button class="chip" data-role="老乡">老乡</button>
+      <button class="chip" data-role="战友">战友</button>
+    </div>
+
+    <div class="ai-mode" id="ai-mode" title="正在识别回答来源">
+      <span class="ai-mode-dot"></span>
+      <span id="ai-mode-text">正在识别回答来源…</span>
+    </div>
+
+    <div class="chat-body" id="chat-body">
+      <div class="chat-hint" id="chat-hint">
+        <p>选一个身份，问问当年的事。</p>
+        <p>可以问：这场仗是怎么打赢的？／为什么叫「黄洋界上炮声隆」？／红军当时吃什么？</p>
+      </div>
+    </div>
+
+    <div class="suggestions" id="suggestions">
+      <button class="sugg" data-q="这场仗是怎么打赢的？">这场仗怎么打赢的？</button>
+      <button class="sugg" data-q="为什么叫「黄洋界上炮声隆」？">炮声隆是怎么来的？</button>
+      <button class="sugg" data-q="红军当时吃什么？">红军吃什么？</button>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="chat-input" placeholder="想问点什么…" autocomplete="off" />
+      <button class="send-btn" id="chat-send">发送</button>
+    </div>
+  </section>
+
+  <!-- ======================= V4 任务页 ======================= -->
+  <section class="view" id="view-task">
+    <header class="sub-header">
+      <button class="back" data-nav="point">‹</button>
+      <h2 class="sub-title">做任务</h2>
+      <span class="sub-spacer"></span>
+    </header>
+
+    <div class="task-progress">
+      <span class="tprog-item" data-t="t1">① 看</span>
+      <span class="tprog-item" data-t="t2">② 想</span>
+      <span class="tprog-item" data-t="t3">③ 理</span>
+    </div>
+
+    <div class="task-body">
+      <div class="task-card" id="task-t1">
+        <div class="task-tag">任务一 · 看</div>
+        <h3 class="task-title">寻找纪念碑</h3>
+        <p class="task-desc">拍一张黄洋界保卫战胜利纪念碑的照片</p>
+        <button class="btn btn-secondary" id="btn-photo">拍照上传</button>
+        <input type="file" id="photo-input" accept="image/*" capture="environment" hidden />
+        <div class="photo-preview" id="photo-preview" hidden></div>
+        <div class="task-status" id="status-t1"></div>
+      </div>
+
+      <div class="task-card" id="task-t2">
+        <div class="task-tag">任务二 · 想</div>
+        <h3 class="task-title">想一想</h3>
+        <p class="task-q">红军以不足一个营击退敌军四个团，最根本的原因是什么？</p>
+        <div class="task-options" id="task-options"></div>
+        <textarea class="task-reason" id="task-reason" placeholder="说说你的理由（至少 20 字）" maxlength="200"></textarea>
+        <div class="task-status" id="status-t2"></div>
+        <button class="btn btn-primary" id="btn-t2">提交</button>
+      </div>
+
+      <div class="task-card" id="task-t3">
+        <div class="task-tag">任务三 · 理</div>
+        <h3 class="task-title">理一理</h3>
+        <p class="task-q">把 4 个事件按时间先后排好（拖拽排序）</p>
+        <div class="task-order" id="task-order"></div>
+        <div class="task-status" id="status-t3"></div>
+        <button class="btn btn-primary" id="btn-t3">提交</button>
+      </div>
+    </div>
+
+    <div class="task-footer">
+      <button class="btn btn-report" id="btn-report" disabled>完成全部 3 项任务后解锁</button>
+    </div>
+  </section>
+
+  <!-- ======================= V5 研学报告页 ======================= -->
+  <section class="view" id="view-report">
+    <header class="sub-header">
+      <button class="back" data-nav="task">‹</button>
+      <h2 class="sub-title">研学报告</h2>
+      <span class="sub-spacer"></span>
+    </header>
+
+    <div class="report-wrap">
+      <div class="report-card" id="report-card">
+        <i class="rpt-corner tl"></i><i class="rpt-corner tr"></i>
+        <i class="rpt-corner bl"></i><i class="rpt-corner br"></i>
+
+        <div class="rpt-head">
+          <div class="rpt-logo">大展红途 · 研学实践报告</div>
+          <div class="rpt-point">黄洋界哨口 · <span id="rpt-date"></span></div>
+        </div>
+
+        <div class="rpt-name-row">
+          <span class="rpt-name" id="rpt-name"></span>
+          <span class="rpt-school" id="rpt-school"></span>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">学习轨迹</div>
+          <div class="rpt-meta">
+            <span class="rpt-meta-item">停留 <b id="rpt-stay"></b></span>
+            <span class="rpt-meta-item">提问 <b id="rpt-ask"></b></span>
+            <span class="rpt-meta-item" id="rpt-tasks"></span>
+            <span class="rpt-meta-item" id="rpt-observe"></span>
+          </div>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">能力评估</div>
+          <div class="rpt-bar-row">
+            <span class="rpt-bar-label">史料理解</span>
+            <span class="rpt-bar-track"><span class="rpt-bar-fill" id="bar-shi"></span></span>
+            <span class="rpt-bar-num" id="bar-shi-num">0</span>
+          </div>
+          <div class="rpt-bar-row">
+            <span class="rpt-bar-label">主动探究</span>
+            <span class="rpt-bar-track"><span class="rpt-bar-fill" id="bar-probe"></span></span>
+            <span class="rpt-bar-num" id="bar-probe-num">0</span>
+          </div>
+          <div class="rpt-bar-row">
+            <span class="rpt-bar-label">现场观察</span>
+            <span class="rpt-bar-track"><span class="rpt-bar-fill" id="bar-observe"></span></span>
+            <span class="rpt-bar-num" id="bar-observe-num">0</span>
+          </div>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">我提的问题</div>
+          <ul class="rpt-questions" id="rpt-questions"></ul>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">我的思考</div>
+          <div class="rpt-thought" id="rpt-thought"></div>
+        </div>
+
+        <div class="rpt-section">
+          <div class="rpt-sec-title">研学评语</div>
+          <div class="rpt-comment" id="rpt-comment">正在生成评语…</div>
+        </div>
+
+        <div class="rpt-foot">
+          <span class="rpt-brand">大展红途</span>
+          <span class="rpt-no">编号 DZHT-2026-0142</span>
+        </div>
+        <div class="rpt-seal" aria-hidden="true"><span>研学</span><span>认证</span></div>
+      </div>
+
+      <p class="rpt-formula">评分规则公开、可解释，不用模型打分：<br>史料理解＝选择题 60＋排序 40　·　主动探究＝提问次数×15（上限 70）＋追问 30　·　现场观察＝拍照 70＋停留满 10 分钟 30</p>
+      <button class="btn btn-primary" id="btn-save">保存这份报告</button>
+    </div>
+  </section>
+
+  <!-- ======================= V6 教师端 ======================= -->
+  <section class="view" id="view-teacher">
+    <header class="sub-header">
+      <button class="back" data-nav="home">‹</button>
+      <h2 class="sub-title">教师端</h2>
+      <span class="sub-spacer"></span>
+    </header>
+
+    <div class="teacher-body">
+      <div class="teacher-export" id="teacher-export">
+        <div class="teacher-title">大展红途 · 班级研学数据</div>
+        <div class="tch-stats" id="tch-stats"></div>
+        <div class="teacher-summary" id="teacher-summary"></div>
+        <table class="teacher-table">
+          <thead>
+            <tr><th>姓名</th><th>点位</th><th>任务</th><th>提问</th><th>用时</th></tr>
+          </thead>
+          <tbody id="teacher-tbody"></tbody>
+        </table>
+
+        <div class="tch-hot">
+          <div class="tch-hot-title">班级高频提问 · 下一次讲什么</div>
+          <div id="tch-hot"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-export">导出班级报告</button>
+
+      <div class="teacher-tip">
+        <b>这份数据能回答什么</b>
+        哪个点位学生问得最多、哪道题最容易错、哪个说法需要老师现场补讲。
+      </div>
+      <p class="teacher-note">* 演示数据（示例），真实采集逻辑未接入</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- 首次进入：姓名 / 学校 -->
+<div class="modal" id="onboard">
+  <div class="modal-mask"></div>
+  <div class="modal-card">
+    <h3 class="modal-title">欢迎来到黄洋界</h3>
+    <p class="modal-sub">先认识一下，之后不再重复问</p>
+    <input class="modal-input" type="text" id="inp-name" placeholder="你的姓名" maxlength="12" autocomplete="off" />
+    <input class="modal-input" type="text" id="inp-school" placeholder="你的学校" maxlength="24" autocomplete="off" />
+    <button class="btn btn-primary" id="btn-onboard">开始研学</button>
+  </div>
+</div>
+
+<!-- 讲解词弹窗 -->
+<div class="modal" id="guide-modal">
+  <div class="modal-mask" id="guide-mask"></div>
+  <div class="modal-card">
+    <h3 class="modal-title">黄洋界哨口 · 讲解词</h3>
+    <div class="guide-text" id="guide-text"></div>
+    <button class="btn btn-primary" id="guide-close">知道了</button>
+  </div>
+</div>
+
+<!-- 报告保存弹窗 -->
+<div class="modal" id="save-modal">
+  <div class="modal-mask" id="save-mask"></div>
+  <div class="modal-card save-card">
+    <h3 class="modal-title">长按图片保存</h3>
+    <img class="save-img" id="save-img" alt="研学报告" />
+    <button class="btn btn-primary" id="save-close">关闭</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="html2canvas.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

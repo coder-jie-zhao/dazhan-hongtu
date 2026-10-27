@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; }
+  .fig { width: 586px; }
+  svg { display: block; }
+  text { font-family: "Microsoft YaHei", "微软雅黑", sans-serif; }
+</style>
+</head>
+<body>
+
+<!-- ============ 图 1：一次提问的处理链路 ============ -->
+<div class="fig" id="fig-rag">
+<svg width="586" height="232" viewBox="0 0 586 232">
+  <rect x="12" y="30" width="118" height="70" fill="#FAFBFD" stroke="#C9D2DD"/>
+  <text x="24" y="50" font-size="9.7" fill="#8A96A4" letter-spacing="1">学 生 侧</text>
+  <text x="24" y="71" font-size="14" font-weight="bold" fill="#12264A">提出问题</text>
+  <text x="24" y="88" font-size="10.2" fill="#5A6570">可自由提问</text>
+
+  <line x1="132" y1="65" x2="150" y2="65" stroke="#A8B4C2" stroke-width="1.2"/>
+  <polygon points="150,61 157,65 150,69" fill="#A8B4C2"/>
+
+  <rect x="158" y="30" width="118" height="70" fill="#F7F9FC" stroke="#1B3A5C"/>
+  <text x="170" y="50" font-size="9.7" fill="#8A96A4" letter-spacing="1">第 二 层</text>
+  <text x="170" y="71" font-size="14" font-weight="bold" fill="#12264A">检索层</text>
+  <text x="170" y="88" font-size="10.2" fill="#5A6570">18 条语料中检索</text>
+
+  <line x1="278" y1="65" x2="296" y2="65" stroke="#A8B4C2" stroke-width="1.2"/>
+  <polygon points="296,61 303,65 296,69" fill="#A8B4C2"/>
+
+  <rect x="304" y="30" width="118" height="70" fill="#F7F9FC" stroke="#C9D2DD"/>
+  <text x="316" y="50" font-size="9.7" fill="#8A96A4" letter-spacing="1">第 三 层</text>
+  <text x="316" y="71" font-size="14" font-weight="bold" fill="#12264A">生成层</text>
+  <text x="316" y="88" font-size="10.2" fill="#5A6570">按角色语气重述</text>
+
+  <line x1="424" y1="65" x2="442" y2="65" stroke="#A8B4C2" stroke-width="1.2"/>
+  <polygon points="442,61 449,65 442,69" fill="#A8B4C2"/>
+
+  <rect x="450" y="30" width="124" height="70" fill="#12264A"/>
+  <text x="462" y="50" font-size="9.7" fill="#9FB0C6" letter-spacing="1">交 付</text>
+  <text x="462" y="71" font-size="14" font-weight="bold" fill="#FFFFFF">回答 + 来源</text>
+  <text x="462" y="88" font-size="10.2" fill="#C3CEDD">每条都注明出处</text>
+
+  <line x1="217" y1="100" x2="217" y2="128" stroke="#C4868A" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <polygon points="213,128 217,134 221,128" fill="#C4868A"/>
+  <rect x="112" y="140" width="210" height="56" fill="#FBF4F4" stroke="#9E2A2B"/>
+  <text x="124" y="158" font-size="10.2" font-weight="bold" fill="#9E2A2B" letter-spacing="1">未 命 中</text>
+  <text x="124" y="176" font-size="12" font-weight="bold" fill="#12264A">拒答，并引导学生向教师提问</text>
+  <text x="124" y="189" font-size="9.7" fill="#8A6A6A">不猜测、不补全、不转述网络说法</text>
+
+  <text x="290" y="119" font-size="9" fill="#8A96A4" text-anchor="middle">命中</text>
+  <text x="205" y="119" font-size="9" fill="#9E2A2B" text-anchor="end">未命中</text>
+
+  <line x1="12" y1="210" x2="574" y2="210" stroke="#E4E9EF"/>
+  <text x="12" y="226" font-size="11" fill="#3A4654">模型<tspan font-weight="bold" fill="#9E2A2B">拿不到</tspan>语料之外的任何材料——不是被要求「不要编」，而是检索不到就生成不出来。</text>
+</svg>
+</div>
+
+<!-- ============ 图 2：首年季度收支 ============ -->
+<div class="fig" id="fig-money">
+<svg width="586" height="308" viewBox="0 0 586 308">
+  <g stroke="#EDF0F4" stroke-width="0.8">
+    <line x1="40" y1="20" x2="574" y2="20"/>
+    <line x1="40" y1="45.7" x2="574" y2="45.7"/>
+    <line x1="40" y1="71.4" x2="574" y2="71.4"/>
+    <line x1="40" y1="97.1" x2="574" y2="97.1"/>
+    <line x1="40" y1="122.9" x2="574" y2="122.9"/>
+    <line x1="40" y1="148.6" x2="574" y2="148.6"/>
+    <line x1="40" y1="174.3" x2="574" y2="174.3"/>
+  </g>
+  <line x1="40" y1="200" x2="574" y2="200" stroke="#C9D2DD" stroke-width="1"/>
+  <g font-size="9" fill="#8A96A4" text-anchor="end">
+    <text x="34" y="23">14.0</text>
+    <text x="34" y="48.7">12.0</text>
+    <text x="34" y="74.4">10.0</text>
+    <text x="34" y="100.1">8.0</text>
+    <text x="34" y="125.9">6.0</text>
+    <text x="34" y="151.6">4.0</text>
+    <text x="34" y="177.3">2.0</text>
+    <text x="34" y="203">0</text>
+  </g>
+
+  <rect x="110" y="146" width="30" height="54" fill="#C2CBD6"/>
+  <text x="125" y="140" font-size="9.7" fill="#5A6570" text-anchor="middle" font-weight="bold">4.20</text>
+
+  <rect x="205" y="180.7" width="30" height="19.3" fill="#1B3A5C"/>
+  <text x="220" y="175" font-size="9.7" fill="#5A6570" text-anchor="middle" font-weight="bold">1.50</text>
+  <rect x="243" y="146.6" width="30" height="53.4" fill="#C2CBD6"/>
+  <text x="258" y="140" font-size="9.7" fill="#5A6570" text-anchor="middle" font-weight="bold">4.15</text>
+
+  <rect x="338" y="45.7" width="30" height="154.3" fill="#1B3A5C"/>
+  <text x="353" y="40" font-size="9.7" fill="#12264A" text-anchor="middle" font-weight="bold">12.00</text>
+  <rect x="376" y="135.1" width="30" height="64.9" fill="#C2CBD6"/>
+  <text x="391" y="129" font-size="9.7" fill="#5A6570" text-anchor="middle" font-weight="bold">5.05</text>
+
+  <rect x="470" y="122.9" width="30" height="77.1" fill="#1B3A5C"/>
+  <text x="485" y="117" font-size="9.7" fill="#12264A" text-anchor="middle" font-weight="bold">6.00</text>
+  <rect x="508" y="142.8" width="30" height="57.2" fill="#C2CBD6"/>
+  <text x="523" y="137" font-size="9.7" fill="#5A6570" text-anchor="middle" font-weight="bold">4.45</text>
+
+  <g font-size="11" fill="#3A4654" text-anchor="middle">
+    <text x="191" y="218">第一季度</text>
+    <text x="324" y="218">第二季度</text>
+    <text x="457" y="218">第三季度</text>
+    <text x="545" y="218">第四季度</text>
+  </g>
+  <g font-size="11.5" font-weight="bold" text-anchor="middle" font-family="Georgia, serif">
+    <text x="191" y="236" fill="#9E2A2B">-4.20</text>
+    <text x="324" y="236" fill="#9E2A2B">-2.65</text>
+    <text x="457" y="236" fill="#1B3A5C">+6.95</text>
+    <text x="545" y="236" fill="#1B3A5C">+1.55</text>
+  </g>
+
+  <rect x="176" y="252" width="9" height="9" fill="#1B3A5C"/>
+  <text x="190" y="260" font-size="10.2" fill="#5A6570">营业收入</text>
+  <rect x="268" y="252" width="9" height="9" fill="#C2CBD6"/>
+  <text x="282" y="260" font-size="10.2" fill="#5A6570">成本合计（含人力机会成本）</text>
+
+  <line x1="12" y1="272" x2="574" y2="272" stroke="#E4E9EF"/>
+  <g text-anchor="middle">
+    <text x="106" y="291" font-size="15" font-weight="bold" fill="#12264A" font-family="Georgia, serif">19.5</text>
+    <text x="106" y="303" font-size="9" fill="#8A96A4">全年营业收入 / 万元</text>
+    <text x="300" y="291" font-size="15" font-weight="bold" fill="#9E2A2B" font-family="Georgia, serif">+1.65</text>
+    <text x="300" y="303" font-size="9" fill="#8A96A4">全年经营结果（含人力成本）</text>
+    <text x="494" y="291" font-size="15" font-weight="bold" fill="#1B3A5C" font-family="Georgia, serif">+13.65</text>
+    <text x="494" y="303" font-size="9" fill="#8A96A4">全年现金口径结果</text>
+  </g>
+  <line x1="203" y1="278" x2="203" y2="305" stroke="#EDF0F4"/>
+  <line x1="397" y1="278" x2="397" y2="305" stroke="#EDF0F4"/>
+</svg>
+</div>
+
+<!-- ============ 图 3：市场三层口径 ============ -->
+<div class="fig" id="fig-funnel">
+<svg width="586" height="230" viewBox="0 0 586 230">
+  <rect x="63" y="6" width="460" height="50" fill="#12264A"/>
+  <text x="80" y="38" font-size="17" font-weight="bold" fill="#FFFFFF" letter-spacing="1">TAM</text>
+  <text x="136" y="38" font-size="15" fill="#D5DEEA">全国研学旅行参与人次</text>
+  <text x="508" y="38" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="end">7200 万人次 / 年</text>
+
+  <rect x="123" y="66" width="340" height="50" fill="#1B3A5C"/>
+  <text x="140" y="98" font-size="17" font-weight="bold" fill="#FFFFFF" letter-spacing="1">SAM</text>
+  <text x="196" y="98" font-size="15" fill="#C3CEDD">井冈山及赣南红色片区</text>
+  <text x="448" y="98" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="end">300–500 万</text>
+
+  <rect x="183" y="126" width="220" height="50" fill="#9E2A2B"/>
+  <text x="200" y="158" font-size="17" font-weight="bold" fill="#FFFFFF" letter-spacing="1">SOM</text>
+  <text x="256" y="158" font-size="15" fill="#F0D6D7">首年 2 万人次</text>
+
+  <line x1="12" y1="196" x2="574" y2="196" stroke="#E4E9EF"/>
+  <text x="12" y="216" font-size="12.5" fill="#5A6570">首年主动只取约 2%：3 个点位只能承接覆盖它们的线路，新进入者也需先用案例进入学校供应商名单。</text>
+</svg>
+</div>
+
+</body>
+</html>

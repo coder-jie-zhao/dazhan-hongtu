@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>大展红途 · 产品界面展示</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 2400px; height: 1350px; overflow: hidden; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    background: #0C0908;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .stage {
+    position: relative;
+    width: 2400px; height: 1350px;
+    padding: 96px 110px 82px;
+    display: flex; flex-direction: column;
+    background:
+      radial-gradient(60% 50% at 8% 4%, rgba(166, 43, 46, 0.30), transparent 62%),
+      radial-gradient(50% 45% at 96% 92%, rgba(200, 160, 99, 0.14), transparent 66%),
+      linear-gradient(150deg, #17100E 0%, #0C0908 52%, #120C0B 100%);
+  }
+  /* 细网格：拉出「工程感」，也避免大面积纯色 */
+  .stage::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .stage > * { position: relative; z-index: 1; }
+
+  /* ---------- 顶部标题 ---------- */
+  .head { display: flex; align-items: flex-end; justify-content: space-between; }
+  .head-left { display: flex; align-items: center; gap: 26px; }
+  .logo-mark {
+    width: 84px; height: 84px; border-radius: 22px;
+    background: linear-gradient(160deg, #C4403C, #8A2224);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Noto Serif SC", serif; font-size: 44px; font-weight: 900;
+    box-shadow: 0 14px 40px rgba(166, 43, 46, 0.42), inset 0 0 0 2px rgba(255, 255, 255, 0.16);
+    position: relative;
+  }
+  .logo-mark::after {
+    content: ""; position: absolute; inset: -7px; border-radius: 26px;
+    border: 1px solid rgba(200, 160, 99, 0.5);
+  }
+  .title-block h1 {
+    font-family: "Noto Serif SC", serif; font-size: 66px; font-weight: 900;
+    letter-spacing: 10px; line-height: 1.1;
+  }
+  .title-block p {
+    margin-top: 10px; font-size: 24px; color: rgba(255, 255, 255, 0.52);
+    letter-spacing: 5px;
+  }
+  .head-right {
+    text-align: right; font-size: 19px; line-height: 1.85;
+    color: rgba(255, 255, 255, 0.4); letter-spacing: 1.5px;
+    padding-bottom: 8px;
+  }
+  .head-right b { color: rgba(200, 160, 99, 0.9); font-weight: 500; }
+
+  /* ---------- 主体：左文案 + 右手机 ---------- */
+  .body { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 40px; margin-top: 40px; }
+
+  .copy { width: 790px; flex: 0 0 auto; }
+  .copy .lead {
+    font-family: "Noto Serif SC", serif; font-size: 34px; line-height: 1.6;
+    letter-spacing: 2px; color: rgba(255, 255, 255, 0.92);
+  }
+  .copy .lead em { font-style: normal; color: #E8896C; }
+  .copy .rule { width: 68px; height: 3px; margin: 34px 0 36px;
+    background: linear-gradient(90deg, #C8A063, rgba(200, 160, 99, 0)); }
+
+  .feat { display: flex; gap: 22px; margin-bottom: 34px; }
+  .feat-no {
+    font-family: "Noto Serif SC", serif; font-size: 26px; font-weight: 700;
+    color: rgba(200, 160, 99, 0.55); line-height: 1.3; width: 44px; flex: 0 0 auto;
+  }
+  .feat-tx h3 {
+    font-family: "Noto Serif SC", serif; font-size: 27px; font-weight: 700;
+    letter-spacing: 2px; margin-bottom: 7px;
+  }
+  .feat-tx p { font-size: 18px; line-height: 1.7; color: rgba(255, 255, 255, 0.45); }
+
+  /* ---------- 手机 ---------- */
+  .phones { display: flex; align-items: center; gap: 40px; flex: 0 0 auto; }
+
+  .phone {
+    width: 330px; height: 694px; flex: 0 0 auto;
+    border-radius: 44px; padding: 10px;
+    background: linear-gradient(160deg, #3A3431, #131110 55%, #2A2523);
+    box-shadow:
+      0 40px 90px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.09),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    position: relative;
+  }
+  /* 中间那台用金边强调，不用位移，三台 caption 才能对齐 */
+  .phone:nth-child(2) {
+    box-shadow:
+      0 50px 110px rgba(0, 0, 0, 0.72),
+      0 0 0 1px rgba(200, 160, 99, 0.34),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+  .screen {
+    width: 310px; height: 674px; border-radius: 35px;
+    overflow: hidden; background: #FBF9F5; position: relative;
+  }
+  .screen iframe {
+    position: absolute; top: 0; left: 0;
+    width: 430px; height: 932px; border: 0;
+    transform: scale(0.72093); transform-origin: top left;
+  }
+  /* 刘海会压住页面标题，索性去掉，靠边框表达手机形态 */
+  .notch { display: none; }
+  .cap {
+    margin-top: 16px; text-align: center;
+    font-size: 15px; letter-spacing: 3px; color: rgba(255, 255, 255, 0.34);
+  }
+
+  /* ---------- 底部 ---------- */
+  .foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 26px; border-top: 1px solid rgba(255, 255, 255, 0.09);
+    font-size: 16px; color: rgba(255, 255, 255, 0.3); letter-spacing: 2px;
+  }
+  .foot .tags { display: flex; gap: 14px; }
+  .tag {
+    padding: 7px 18px; border-radius: 30px; font-size: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.14); color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* =====================================================================
+     浅色版：给浅底 PPT 用（?theme=light）
+     ===================================================================== */
+  body.light { background: #F7F2EA; color: #1A1A1A; }
+  body.light .stage {
+    background:
+      radial-gradient(58% 48% at 6% 3%, rgba(166, 43, 46, 0.10), transparent 62%),
+      radial-gradient(50% 45% at 97% 94%, rgba(200, 160, 99, 0.20), transparent 66%),
+      linear-gradient(150deg, #FDFAF5 0%, #F8F3EB 52%, #F2EBE0 100%);
+  }
+  body.light .stage::before {
+    background-image:
+      linear-gradient(rgba(26, 26, 26, 0.032) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26, 26, 26, 0.032) 1px, transparent 1px);
+  }
+  body.light .title-block h1 { color: #1A1A1A; }
+  body.light .title-block p { color: #6B7280; }
+  body.light .head-right { color: #9A938A; }
+  body.light .head-right b { color: #A62B2E; }
+  body.light .copy .lead { color: #221F1C; }
+  body.light .copy .lead em { color: #A62B2E; }
+  body.light .feat-no { color: rgba(166, 43, 46, 0.4); }
+  body.light .feat-tx h3 { color: #1A1A1A; }
+  body.light .feat-tx p { color: #6B7280; }
+  body.light .phone {
+    background: linear-gradient(160deg, #F3EDE4, #DCD5C9 55%, #C9C1B5);
+    box-shadow:
+      0 34px 70px rgba(60, 45, 30, 0.18),
+      0 0 0 1px rgba(26, 26, 26, 0.09),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+  }
+  body.light .phone:nth-child(2) {
+    box-shadow:
+      0 42px 90px rgba(60, 45, 30, 0.22),
+      0 0 0 1.5px rgba(166, 43, 46, 0.32),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+  }
+  body.light .cap { color: #9A938A; }
+  body.light .foot { border-top-color: rgba(26, 26, 26, 0.1); color: #9A938A; }
+  body.light .tag { border-color: rgba(26, 26, 26, 0.13); color: #6B7280; }
+  body.light .logo-mark {
+    box-shadow: 0 12px 30px rgba(166, 43, 46, 0.26), inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="head">
+    <div class="head-left">
+      <div class="logo-mark">展</div>
+      <div class="title-block">
+        <h1>大展红途</h1>
+        <p>井冈山红色研学智能导览系统</p>
+      </div>
+    </div>
+    <div class="head-right">
+      黄洋界哨口 · 试点点位<br />
+      <b>18</b> 条已审核史料 · <b>3</b> 种对话身份 · <b>3</b> 项现场任务
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="copy">
+      <p class="lead">
+        把「听讲解」变成<em>「自己找答案」</em>。<br />
+        讲解、任务、报告，走完一个完整闭环。
+      </p>
+      <div class="rule"></div>
+
+      <div class="feat">
+        <div class="feat-no">01</div>
+        <div class="feat-tx">
+          <h3>史料锚定问答</h3>
+          <p>答案只从已审核史料里检索生成，注明出处；超范围明确拒答，不给「差不多」的答案。</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-no">02</div>
+        <div class="feat-tx">
+          <h3>现场任务闭环</h3>
+          <p>看·想·理三题绑定现场，完成才解锁报告——把「逛一圈」变成「做一遍」。</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-no">03</div>
+        <div class="feat-tx">
+          <h3>可解释的研学报告</h3>
+          <p>评分规则公开、可逐项复核，不用模型打分，学生和老师都看得懂这份报告怎么来的。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phones">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen"><iframe src="index.html?view=home&demo=1&embed=1"></iframe></div>
+        <div class="cap">入口 · 点位</div>
+      </div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen"><iframe src="index.html?view=chat&demo=1&embed=1"></iframe></div>
+        <div class="cap">AI 对话 · 三种身份</div>
+      </div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen"><iframe src="index.html?view=report&demo=1&embed=1"></iframe></div>
+        <div class="cap">研学报告 · 可解释评分</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="tags">
+      <span class="tag">史料锚定</span>
+      <span class="tag">超范围拒答</span>
+      <span class="tag">任务闭环</span>
+      <span class="tag">可解释评分</span>
+    </div>
+    <div>大展红途 · 产品演示</div>
+  </div>
+
+</div>
+<script>
+  if (new URLSearchParams(location.search).get("theme") === "light") {
+    document.body.classList.add("light");
+  }
+</script>
+</body>
+</html>

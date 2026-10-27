@@ -1,0 +1,14 @@
+{
+  "name": "dazhan-hongtu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "大展红途 · 井冈山红色研学智能导览（黄洋界点位演示版）",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "probe": "node _probe.js"
+  }
+}

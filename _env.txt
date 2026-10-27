@@ -1,0 +1,6 @@
+﻿workspace exists: True
+jsdom: True
+node: 
+v22.22.2
+edge: True
+chrome: True
