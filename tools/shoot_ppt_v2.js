@@ -68,6 +68,20 @@ async function shotFrames() {
   for (const [view, pid, file] of showcaseShots) {
     await framePage.goto("file:///" + FRAME + "?view=" + view + "&id=" + pid, { waitUntil: "networkidle2", timeout: 40000 });
     await new Promise((r) => setTimeout(r, 3000));
+
+    // 对话页要有一段真实问答才有展示价值：空白的欢迎语看不出「史料锚定」
+    if (view === "chat") {
+      const inner = framePage.frames().find((f) => f.url().includes("index.html"));
+      if (inner) {
+        await inner.evaluate(() => {
+          const inp = document.getElementById("chat-input");
+          const btn = document.getElementById("chat-send");
+          if (inp && btn) { inp.value = "这场仗是怎么打赢的？"; btn.click(); }
+        });
+        await new Promise((r) => setTimeout(r, 5500));
+      }
+    }
+
     await framePage.screenshot({ path: path.join(OUT, file), omitBackground: true });
     console.log("frame: " + file);
   }
