@@ -33,11 +33,13 @@ Thumbs.db
 /tools/_*.js
 /tools/_*.py
 
-# 部署构建产物（由 tools/build_deploy.py / build_deploy_online.py 生成，不入库）
+# 部署构建产物（由 tools/build_deploy*.py 生成，不入库）
 /dist/
 /dist.zip
 /dist-online/
 /dist-online.zip
+/dist-vercel/
+/dist-vercel.zip
 
 # 编辑器与本地配置
 .claude/
