@@ -33,6 +33,10 @@ Thumbs.db
 /tools/_*.js
 /tools/_*.py
 
+# 部署构建产物（由 tools/build_deploy.py 生成，不入库）
+/dist/
+/dist.zip
+
 # 说明：v1 的 _probe.js / _shot*.js / _shots/ / _compose_hd.py / _不用了-二维码/
 #       是 v1 版本的一部分，已在 v1.0.0 提交中跟踪，**故意保留**。
 #       v2/_test.js 是 v2 的验收脚本，也保留。

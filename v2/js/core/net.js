@@ -86,9 +86,20 @@
    *   2. /api/chat 但模型未配置 → 服务端只做检索，返回史料直出
    *   3. 整个后端不可用 → 前端本地检索 + 离线语料
    *
+   * 纯静态托管（EdgeOne Pages / GitHub Pages / Vercel 静态）时没有 /api/*，
+   * 每次提问都先打一次必失败的请求既慢又在控制台刷红字。
+   * 所以先看 health 探测结果：已知离线就直接走本地。
+   *
    * @returns {Promise<{answer, sources, refusal, mode}>}
    */
   function ask(question, role, point, corpus, offlineQA, offlinePointName, onStage) {
+    // 已确认没有后端 → 直接本地作答，不再发必失败的请求
+    var knownMode = DZHT.core.store.state.net.mode;
+    if (knownMode === "offline") {
+      if (onStage) onStage("done");
+      return Promise.resolve(localAnswer(question, corpus, offlineQA, offlinePointName, point));
+    }
+
     if (onStage) onStage("connecting");
 
     return postJSON("/api/chat", { question: question, role: role, point: point })
@@ -103,6 +114,8 @@
       })
       .catch(function (err) {
         if (onStage) onStage("fallback");
+        // 失败一次就记住：后续提问不再白试后端
+        DZHT.core.store.setNet({ mode: "offline", model: null, endpoint: null });
         return localAnswer(question, corpus, offlineQA, offlinePointName, point);
       });
   }
