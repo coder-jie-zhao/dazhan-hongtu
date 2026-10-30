@@ -114,12 +114,22 @@ async function handler(req, res) {
   // 有模型时放行「需要推理」的问题（哪个先发生 / 如果…会怎样 / 两者区别），
   // 这类问题本地检索答不了，但模型能在多条史料间比较推演。
   // 没有模型时仍在检索层拒答——硬答会答非所问，比拒答更糟。
-  let tops = R.retrieve(question, {
+  //
+  // 比较类问题必须跨点位取史料：
+  // 「井冈山会师」在龙江书院，「黄洋界保卫战」在黄洋界。只查当前点位，
+  // 模型手里只有一半史料，就只能拒答、或者凭记忆答（后者被提示词禁止）。
+  // 实测「黄洋界保卫战和井冈山会师哪个先发生」连问三次：两次答对、一次只答一半。
+  const CROSS_POINT = /哪个先|谁先|先后|早于|晚于|时间线|相比|比较|区别|差别|哪个更|之间/;
+  const crossPoint = CROSS_POINT.test(question);
+
+  const scope = {
     corpus: corpus.corpus,
-    point: point,
-    topN: 2,
+    point: crossPoint ? null : point,  // null = 全部点位
+    topN: crossPoint ? 3 : 2,          // 跨点位时要多取一条，才够两边比较
     allowReasoning: hasKey
-  });
+  };
+
+  let tops = R.retrieve(question, scope);
 
   // ---- 检索失败时，先用模型做一次「查询改写」再试 ----
   //
@@ -133,15 +143,12 @@ async function handler(req, res) {
     try {
       rewritten = await rewriteQuery(question, pointName);
       if (rewritten && rewritten !== "无关") {
-        tops = R.retrieve(rewritten, {
-          corpus: corpus.corpus,
-          point: point,
-          topN: 2,
+        tops = R.retrieve(rewritten, Object.assign({}, scope, {
           allowReasoning: true,
           // 改写串是我们自己生成的检索词，跳过域外检查，
           // 否则「粮食 吃饭 伙食…」会因为含「吃饭」被判成景区服务问题
           skipDomainCheck: true
-        });
+        }));
       }
     } catch (e) {
       // 改写失败不影响主流程：继续走拒答即可
