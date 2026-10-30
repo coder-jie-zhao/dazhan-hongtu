@@ -35,6 +35,17 @@ node server.js            # 打开 http://127.0.0.1:8130
 **断网保命**：直接双击 `v2/index.html` 也能完整演示
 （`data/corpus.fallback.js` 是同源兜底副本）。
 
+### 变成网址给别人看
+
+```bash
+python tools/build_deploy.py     # 生成 dist/ 和 dist.zip（3.2MB）
+```
+
+把 `dist.zip` 拖到 [腾讯云 EdgeOne Pages](https://console.cloud.tencent.com/edgeone/pages)
+即可上线，免备案、国内节点。详细步骤见 [部署上线说明.md](部署上线说明.md)。
+
+纯静态托管也能完整使用：AI 走本地检索兜底，回答照样带史料出处、超纲照样拒答。
+
 ### v1（兜底版本）
 
 ```bash
