@@ -56,6 +56,36 @@
   var OUT_OF_SCOPE = ["后来", "之后", "结局", "下场", "评价", "你觉得", "你认为", "假如", "如果是你", "为什么他", "为什么她"];
 
   /* ---------------------------------------------------------------------
+   * 需要推理的问题类型
+   *
+   * 这是本地检索最容易翻车、也最危险的地方：
+   * 问「黄洋界保卫战和井冈山会师哪个先发生」，检索会找到「保卫战的时间」
+   * 那条史料，然后把时间念一遍 —— 看起来答了，其实没回答「哪个先」。
+   *
+   * 答非所问比拒答糟糕得多：学生会以为自己得到了答案。
+   * 这类问题要么靠模型做跨条目推理，要么老老实实拒答。
+   * 没有模型时，拒答是唯一诚实的选择。
+   * ------------------------------------------------------------------- */
+  var NEEDS_REASONING = [
+    { re: /(哪个先|哪一个先|谁先|孰先|哪个早|哪个更早|先后顺序|哪个在前)/, why: "时间先后比较" },
+    { re: /(如果|假如|要是|万一|倘若|假设|若不是|要不是)/, why: "假设推演" },
+    { re: /(区别|不同点|差异|相比|对比|比起|哪个更|哪个最|更值得)/, why: "对比评价" },
+    { re: /(为什么呢|说明了什么|意味着|反映了什么|有什么启示|给我们什么)/, why: "提炼升华" }
+  ];
+
+  /**
+   * 判断问题是否需要跨史料推理。
+   * @returns {string|null} 需要时返回原因，否则 null
+   */
+  function reasoningReason(query) {
+    var n = String(query == null ? "" : query);
+    for (var i = 0; i < NEEDS_REASONING.length; i++) {
+      if (NEEDS_REASONING[i].re.test(n)) return NEEDS_REASONING[i].why;
+    }
+    return null;
+  }
+
+  /* ---------------------------------------------------------------------
    * 文本归一化
    * ------------------------------------------------------------------- */
 
@@ -77,6 +107,26 @@
     return t;
   }
 
+  /**
+   * 生成用于匹配的若干候选串。
+   *
+   * 为什么要候选而不是一条：
+   * GENERIC 里包含点位名（黄洋界 / 八角楼 / 龙江书院）。这在跨点位检索时是对的
+   * ——「黄洋界」到处都是，不该主导打分。但在单点位检索时就过度了：
+   * 问「八角楼为什么叫八角楼」，剔除点位名后只剩一个「叫」字，
+   * bigram 通道完全失效，分数卡在 0.405 差一点被拒答。
+   *
+   * 做法：优先用剔除泛词的版本；如果剔除后短到无法生成 bigram（< 2 字），
+   * 回退到只去停用词、不剔泛词的版本。两条候选都参与匹配，取较高分。
+   */
+  function prepCandidates(s) {
+    var stripped = prep(s);
+    var full = normalize(s);
+    var out = [stripped];
+    if (stripped !== full && stripped.length < 2) out.push(full);
+    return out;
+  }
+
   function prep(s) { return normalize(stripGeneric(s)); }
 
   function bigrams(s) {
@@ -85,12 +135,28 @@
     return out;
   }
 
+  /**
+   * 二元组重合度。query 与 text 都可能有多个候选串（见 prepCandidates），
+   * 取所有组合里比例最高的一组。
+   * @returns {{hit:number, total:number, ratio:number}}
+   */
   function bigramMatch(query, text) {
-    var qb = bigrams(prep(query));
-    var tb = new Set(bigrams(prep(text)));
-    var hit = 0;
-    for (var i = 0; i < qb.length; i++) if (tb.has(qb[i])) hit++;
-    return { hit: hit, total: qb.length };
+    var qCands = prepCandidates(query);
+    var tCands = prepCandidates(text);
+    var best = { hit: 0, total: 0, ratio: 0 };
+
+    for (var i = 0; i < qCands.length; i++) {
+      var qb = bigrams(qCands[i]);
+      if (!qb.length) continue;
+      for (var j = 0; j < tCands.length; j++) {
+        var tb = new Set(bigrams(tCands[j]));
+        var hit = 0;
+        for (var k = 0; k < qb.length; k++) if (tb.has(qb[k])) hit++;
+        var ratio = hit / qb.length;
+        if (ratio > best.ratio) best = { hit: hit, total: qb.length, ratio: ratio };
+      }
+    }
+    return best;
   }
 
   function keywordHit(query, keywords) {
@@ -156,7 +222,15 @@
   /**
    * 检索一条语料库。
    * @param {string} query 用户问题
-   * @param {object} opts  { point, corpus, threshold, topN }
+   * @param {object} opts  { point, corpus, threshold, topN, allowReasoning, skipDomainCheck }
+   *   allowReasoning：是否放行「需要跨史料推理」的问题。
+   *     false（默认，离线模式用）：推理类问题直接拒答——本地做不了，硬答会答非所问。
+   *     true（有模型时）：正常检索，把史料交给模型做比较与推演。
+   *   skipDomainCheck：跳过「景区服务类问题」检查。
+   *     用于模型改写出来的关键词串 —— 那是我们自己生成的检索词，
+   *     不是用户原话，不该再按用户问题判断是否越界。
+   *     踩过的坑：改写串里带「吃饭」，被 OUT_OF_DOMAIN 的「吃饭」误判，
+   *     导致「红军靠什么填肚子」明明能查到史料却被拒答。
    * @returns {Array|null} 命中的语料条目数组（已按相关度降序），未命中返回 null
    */
   function retrieve(query, opts) {
@@ -165,9 +239,13 @@
     var threshold = typeof opts.threshold === "number" ? opts.threshold : THRESHOLD;
     var point = opts.point || null;
     var topN = opts.topN || 2;
+    var allowReasoning = opts.allowReasoning === true;
+    var skipDomainCheck = opts.skipDomainCheck === true;
 
     if (!query || !String(query).trim()) return null;
-    if (isOutOfDomain(query)) return null;
+    if (!skipDomainCheck && isOutOfDomain(query)) return null;
+    // 需要跨史料推理的问题：没有模型就答不了，硬答会答非所问
+    if (!allowReasoning && reasoningReason(query)) return null;
 
     var docs = corpus.filter(function (c) {
       return c.audit === "approved" && (!point || !c.point || c.point === point);
@@ -223,6 +301,12 @@
         }
       }
       return { hit: false, docs: [], reason: why || "域外问题", score: 0 };
+    }
+
+    // 推理类问题：不是「没查到」，而是「查到了也答不对」，要区分开
+    var whyReason = reasoningReason(q);
+    if (whyReason) {
+      return { hit: false, docs: [], reason: "需要" + whyReason + "（超出单条史料的回答能力）", score: 0 };
     }
 
     var docs = corpus.filter(function (c) {
@@ -286,6 +370,8 @@
     keywordHit: keywordHit,
     idf: idf,
     isOutOfDomain: isOutOfDomain,
+    reasoningReason: reasoningReason,
+    prepCandidates: prepCandidates,
     kwScore: kwScore,
     retrieve: retrieve,
     retrieveWithTrace: retrieveWithTrace,
