@@ -125,6 +125,13 @@
     }
 
     // 入场准备
+    // 先同步「当前点位」：任何带 id 参数的路由都直接生效，
+    // 让对话/任务/报告/AR 视图知道自己在讲哪个点位。
+    // 不带 id 的路由（如 #/selftest）沿用上一次，不影响。
+    if (params && params.id) {
+      DZHT.core.store.setActivePoint(params.id);
+    }
+
     if (spec.onUpdate) {
       try { spec.onUpdate(params || {}); } catch (e) { console.error(e); }
     }

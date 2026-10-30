@@ -55,8 +55,23 @@
     };
   }
 
+  function pointById(id) {
+    var pts = C.data.points;
+    for (var i = 0; i < pts.length; i++) if (pts[i].id === id) return pts[i];
+    return null;
+  }
+
+  /** 当前点位：优先用路由参数写入的 activePointId，其次点位页状态，最后兜底 */
+  function currentPoint() {
+    var p = pointById(DZHT.core.store.getActivePointId());
+    if (p) return p;
+    p = DZHT.views.point.point();
+    if (p) return p;
+    return C.data.points[0];
+  }
+
   function render() {
-    var p = DZHT.views.point.point() || C.data.points[0];
+    var p = currentPoint();
 
     C.el.hero.innerHTML =
       '<img src="' + esc(p.hero) + '" alt="" />' +

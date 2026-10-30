@@ -39,9 +39,19 @@
     };
   }
 
+  function pointById(id) {
+    var pts = C.data.points;
+    for (var i = 0; i < pts.length; i++) if (pts[i].id === id) return pts[i];
+    return null;
+  }
+
+  /** 当前点位：优先用路由参数写入的 activePointId，其次点位页状态，最后兜底 */
   function currentPoint() {
-    var p = DZHT.views.point.point();
-    return p || C.data.points[0];
+    var p = pointById(DZHT.core.store.getActivePointId());
+    if (p) return p;
+    p = DZHT.views.point.point();
+    if (p) return p;
+    return C.data.points[0];
   }
 
   function reportNo(user) {
@@ -59,6 +69,12 @@
     C.point = p;
     var prog = store.getProgress(p.id);
 
+    // 自述门槛要跟着学段走（初中 15 / 高中 20）。
+    // 直接从学段配置推算，不依赖「用户是否访问过任务页」——
+    // 否则从外部链接直接进报告页时会用默认 20 字，与任务页判定不一致。
+    var gradeCfg = DZHT.domain.tasks.gradeById((user && user.grade) || "junior");
+    var selfMinLen = gradeCfg.textMinLen || 20;
+
     var sc = DZHT.domain.scoring.compute({
       tasks: prog.tasks || {},
       choiceCorrect: prog.choiceCorrect,
@@ -66,7 +82,7 @@
       questions: prog.questions || [],
       enterTime: prog.enterTime,
       selfText: prog.selfText || ""
-    });
+    }, { selfMinLen: selfMinLen });
 
     var now = new Date();
     var dateStr = now.getFullYear() + "." + String(now.getMonth() + 1).padStart(2, "0") + "." + String(now.getDate()).padStart(2, "0");
@@ -97,10 +113,14 @@
       '</div>';
     }).join("");
 
-    // 提问记录（原样照录，不筛选）
-    var qs = (prog.questions || []).slice(-4);
+    // 提问记录（原样照录，不筛选；超出 4 条时注明，避免「分数说问了 10 次、只列 4 条」的疑问）
+    var allQs = prog.questions || [];
+    var qs = allQs.slice(-4);
+    var moreNote = allQs.length > 4
+      ? '<li class="rpt-more">共 ' + allQs.length + ' 条提问，此处展示最近 4 条</li>'
+      : "";
     C.el.questions.innerHTML = qs.length
-      ? qs.map(function (q) { return "<li>" + esc(q) + "</li>"; }).join("")
+      ? qs.map(function (q) { return "<li>" + esc(q) + "</li>"; }).join("") + moreNote
       : '<li class="rpt-empty">本次没有提问</li>';
 
     // 我的思考：优先用自述，没有则用理由

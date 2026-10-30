@@ -26,12 +26,16 @@
    * 计算能力评估分。
    * @param {object} s  { tasks:{id:bool}, choiceCorrect:bool, orderCorrect:bool,
    *                      questions:[], enterTime:number, selfText:string }
-   * @param {object} opts { now:number }
+   * @param {object} opts { now:number, selfMinLen:number }
+   *   selfMinLen：自述题的达标字数。按学段不同（初中 15 / 高中 20），
+   *   默认 20。评分必须用与任务单一致的门槛，否则会出现
+   *   「任务页显示已完成、报告里却只给 50 分」的矛盾。
    * @returns {{items:Array, total:number, stayMin:number, askCount:number}}
    */
   function compute(s, opts) {
     opts = opts || {};
     var now = opts.now || Date.now();
+    var selfMinLen = opts.selfMinLen || 20;
     s = s || {};
 
     var tasks = s.tasks || {};
@@ -53,7 +57,7 @@
     var observe = (tasks.photo ? 70 : 0) + (stayMin >= 10 ? 30 : 0);
 
     // 自我表达 = 写下自述 100（只判字数，不判对错）
-    var express = selfText.length >= 20 ? 100 : (selfText.length > 0 ? 50 : 0);
+    var express = selfText.length >= selfMinLen ? 100 : (selfText.length > 0 ? 50 : 0);
 
     var items = [
       {
@@ -70,7 +74,9 @@
       },
       {
         key: "express", label: "自我表达", value: express, max: 100,
-        detail: selfText.length >= 20 ? "已写下 " + selfText.length + " 字自述" : (selfText.length ? "自述仅 " + selfText.length + " 字" : "未填写自述")
+        detail: selfText.length >= selfMinLen
+          ? "已写下 " + selfText.length + " 字自述"
+          : (selfText.length ? "自述仅 " + selfText.length + " 字（需 " + selfMinLen + " 字）" : "未填写自述")
       }
     ];
 

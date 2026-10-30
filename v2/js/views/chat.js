@@ -46,9 +46,27 @@
     };
   }
 
+  function pointById(id) {
+    var pts = C.data.points;
+    for (var i = 0; i < pts.length; i++) if (pts[i].id === id) return pts[i];
+    return null;
+  }
+
+  /**
+   * 当前点位。优先级：
+   *   1. store 里的 activePointId（由路由参数写入，最权威）
+   *   2. 点位页上次渲染过的点位（从点位页点进来时它是对的）
+   *   3. 第一个点位（兜底）
+   *
+   * 不能只读第 2 条：刷新页面或直接打开 #/chat?id=xxx 时，
+   * 点位页还没渲染过，会拿到错误点位。
+   */
   function currentPoint() {
-    var p = DZHT.views.point.point();
-    return p || C.data.points[0];
+    var p = pointById(DZHT.core.store.getActivePointId());
+    if (p) return p;
+    p = DZHT.views.point.point();
+    if (p) return p;
+    return C.data.points[0];
   }
 
   /* ---------- 角色选择器 ---------- */

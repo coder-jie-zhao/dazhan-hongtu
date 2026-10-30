@@ -36,6 +36,12 @@
     user: null,
     progress: {},
     route: { name: "home", params: {} },
+    // 当前点位 id —— 由路由参数驱动，是各视图（对话/任务/报告/AR）
+    // 判断"我现在在讲哪个点位"的唯一依据。
+    // 不能让视图去读「上一次访问过的点位页」这个隐式状态：
+    // 那样刷新页面或直接打开 #/chat?id=xxx 时会拿到错误点位，
+    // 出现「问黄洋界却回答超出龙江书院范围」这种硬伤。
+    activePointId: null,
     net: { mode: "unknown", model: null, endpoint: null },
     ui: { online: false, busy: false }
   };
@@ -90,6 +96,7 @@
       reason: "",       // 任务二的理由
       selfText: "",     // 任务四的自述
       questions: [],    // 提问记录
+      photos: {},       // { taskId: 压缩后的 dataURL } —— 重建 DOM 后用于恢复预览
       enterTime: 0,    // 进入点位的时间戳
       done: false
     };
@@ -130,6 +137,16 @@
     emit("route");
   }
 
+  /* ---------- 当前点位 ---------- */
+  function setActivePoint(id) {
+    if (!id || state.activePointId === id) return state.activePointId;
+    state.activePointId = id;
+    emit("activePoint");
+    return id;
+  }
+
+  function getActivePointId() { return state.activePointId; }
+
   /* ---------- 网络状态 ---------- */
   function setNet(patch) {
     for (var k in patch) if (Object.prototype.hasOwnProperty.call(patch, k)) state.net[k] = patch[k];
@@ -154,6 +171,8 @@
     resetProgress: resetProgress,
     allProgress: allProgress,
     setRoute: setRoute,
+    setActivePoint: setActivePoint,
+    getActivePointId: getActivePointId,
     setNet: setNet,
     setUI: setUI
   };

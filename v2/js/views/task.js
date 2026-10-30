@@ -29,9 +29,19 @@
     };
   }
 
+  function pointById(id) {
+    var pts = C.data.points;
+    for (var i = 0; i < pts.length; i++) if (pts[i].id === id) return pts[i];
+    return null;
+  }
+
+  /** 当前点位：优先用路由参数写入的 activePointId，其次点位页状态，最后兜底 */
   function currentPoint() {
-    var p = DZHT.views.point.point();
-    return p || C.data.points[0];
+    var p = pointById(DZHT.core.store.getActivePointId());
+    if (p) return p;
+    p = DZHT.views.point.point();
+    if (p) return p;
+    return C.data.points[0];
   }
 
   function currentGrade() {
@@ -65,9 +75,12 @@
 
     // 任务卡
     C.el.body.innerHTML = plan.items.map(function (item, i) {
+      // stage 与 verb 常常是同一个字（都是「看」），只显示一次，别出现「看／看」
+      var tagExtra = item.stage && item.stage !== item.verb
+        ? '<span class="tcat">／' + esc(item.verb) + '</span>'
+        : "";
       return '<div class="task-card" id="task-' + item.id + '" data-task="' + item.id + '">' +
-        '<div class="task-tag">' + esc(item.category) + ' · ' + esc(item.stage) +
-          '<span class="tcat">／' + esc(item.verb) + '</span></div>' +
+        '<div class="task-tag">' + esc(item.category) + ' · ' + esc(item.stage) + tagExtra + '</div>' +
         '<h3 class="task-title">' + esc(item.title) + '</h3>' +
         (item.desc ? '<p class="task-desc">' + esc(item.desc) + '</p>' : "") +
         (item.question ? '<p class="task-q">' + esc(item.question) + '</p>' : "") +
@@ -89,9 +102,14 @@
 
   function renderBody(item, prog) {
     if (item.type === "photo") {
-      return '<button class="btn btn-secondary btn-sm" id="btn-photo-' + item.id + '">拍照上传</button>' +
+      var shot = (prog.photos || {})[item.id];
+      return '<button class="btn btn-secondary btn-sm" id="btn-photo-' + item.id + '">' +
+        (shot ? "重新拍照" : "拍照上传") + '</button>' +
         '<input type="file" id="photo-input-' + item.id + '" accept="image/*" capture="environment" hidden />' +
-        '<div class="photo-preview" id="preview-' + item.id + '" hidden></div>';
+        '<div class="photo-preview" id="preview-' + item.id + '"' + (shot ? "" : " hidden") + '>' +
+        (shot ? '<img src="' + shot + '" alt="上传的现场照片" />' +
+          '<button class="pp-del" aria-label="删除">×</button>' : "") +
+        '</div>';
     }
     if (item.type === "choice") {
       return '<div class="task-options">' + item.options.map(function (o, i) {
@@ -149,7 +167,12 @@
     if (item.type === "photo") return !!(prog.tasks && prog.tasks[item.id]);
     if (item.type === "choice") return !!prog.choiceCorrect;
     if (item.type === "order") return !!prog.orderCorrect;
-    if (item.type === "text") return (prog.selfText || "").trim().length >= 20;
+    // 自述题的门槛必须与本题的 minLen 一致（初中 15 字 / 高中 20 字）。
+    // 写死 20 会导致初中生写满 15 字能提交、却判不过，报告按钮永远不解锁。
+    if (item.type === "text") {
+      var need = item.minLen || 20;
+      return (prog.selfText || "").trim().length >= need;
+    }
     return false;
   }
 
@@ -162,6 +185,52 @@
     if (!el) return;
     el.style.height = "auto";
     el.style.height = Math.min(el.scrollHeight + 2, 180) + "px";
+  }
+
+  /**
+   * 把图片压缩成最大边 maxSize 的 JPEG dataURL。
+   *
+   * 为什么要压：手机直出照片动辄 5–10MB，原样转成 dataURL 会是十几 MB 的字符串，
+   * 塞进 DOM 会卡、存进 localStorage 会直接爆配额（通常 5MB）。
+   * 压到 720px / q0.72 后约 60–90KB，清晰度足够看清"学生确实在现场拍了张照"。
+   *
+   * @returns {Promise<string>} dataURL
+   */
+  function compressImage(file, maxSize, quality) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(new Error("read fail")); };
+      reader.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error("decode fail")); };
+        img.onload = function () {
+          try {
+            var w = img.naturalWidth || img.width;
+            var h = img.naturalHeight || img.height;
+            if (!w || !h) { reject(new Error("empty image")); return; }
+
+            var scale = Math.min(1, maxSize / Math.max(w, h));
+            var cw = Math.round(w * scale);
+            var ch = Math.round(h * scale);
+
+            var canvas = document.createElement("canvas");
+            canvas.width = cw;
+            canvas.height = ch;
+            var ctx = canvas.getContext("2d");
+            // 白底：PNG 透明图转 JPEG 后透明区会变黑，先铺白
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, cw, ch);
+            ctx.drawImage(img, 0, 0, cw, ch);
+
+            resolve(canvas.toDataURL("image/jpeg", quality || 0.72));
+          } catch (e) {
+            reject(e);
+          }
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   function updateCount(item) {
@@ -235,19 +304,36 @@
       var f = input.files && input.files[0];
       if (!f) return;
       var tid = input.id.replace("photo-input-", "");
-      var reader = new FileReader();
-      reader.onload = function () {
+      input.value = ""; // 允许重复选同一张图
+
+      // 手机直出照片常 5–10MB，原样塞进 page 会卡，也没必要（演示版不识别内容）
+      if (f.size > 20 * 1024 * 1024) {
+        setStatus(tid, "照片太大（超过 20MB），换一张或先压缩", "err");
+        return;
+      }
+
+      setStatus(tid, "正在处理照片…", "");
+
+      compressImage(f, 720, 0.72).then(function (dataUrl) {
         var prev = $("preview-" + tid);
         if (prev) {
-          prev.innerHTML = '<img src="' + reader.result + '" alt="上传照片" />' +
+          prev.innerHTML = '<img src="' + dataUrl + '" alt="上传的现场照片" />' +
             '<button class="pp-del" aria-label="删除">×</button>';
           prev.hidden = false;
         }
+        // 缩略图存进进度：render() 重建 DOM 后还能恢复，
+        // 学生不会遇到「照片一闪就没了」。720px JPEG 约 60–90KB，localStorage 放得下。
+        var store = DZHT.core.store;
+        var prog = store.getProgress(C.point.id);
+        var photos = Object.assign({}, prog.photos || {});
+        photos[tid] = dataUrl;
+        store.setProgress(C.point.id, { photos: photos });
         markDone(tid);
         setStatus(tid, "✓ 已上传，任务完成", "ok");
         DZHT.core.motion.haptic(14);
-      };
-      reader.readAsDataURL(f);
+      }).catch(function () {
+        setStatus(tid, "这张图片读不出来，换一张试试", "err");
+      });
     });
 
     // 输入
@@ -263,8 +349,6 @@
     C.el.body.addEventListener("click", function (e) {
       var del = e.target.closest(".pp-del");
       if (!del) return;
-      var prev = del.closest(".photo-preview");
-      if (prev) { prev.innerHTML = ""; prev.hidden = true; }
       var card = del.closest(".task-card");
       if (card) {
         var tid = card.getAttribute("data-task");
@@ -272,8 +356,14 @@
         var prog = store.getProgress(C.point.id);
         var tasks = Object.assign({}, prog.tasks);
         delete tasks[tid];
-        store.setProgress(C.point.id, { tasks: tasks });
+        // 缩略图也要一起删，否则照片"删掉了"但重建后还在
+        var photos = Object.assign({}, prog.photos || {});
+        delete photos[tid];
+        store.setProgress(C.point.id, { tasks: tasks, photos: photos });
         render();
+      } else {
+        var prev = del.closest(".photo-preview");
+        if (prev) { prev.innerHTML = ""; prev.hidden = true; }
       }
     });
 
@@ -302,7 +392,9 @@
       var reason = (ta ? ta.value : "").trim();
 
       if (choice !== item.answer) {
-        setStatus(itemId, "再想想：" + (item.hintOnWrong || "答案不对"), "err");
+        // hintOnWrong 在语料里已经是完整措辞（如「再想想：山下的人为什么肯往山上送粮」），
+        // 这里不能再拼一次前缀，否则会变成「再想想：再想想：…」
+        setStatus(itemId, item.hintOnWrong || "答案不对，再想想。", "err");
         DZHT.core.motion.shake($("task-" + itemId));
         return;
       }
@@ -337,8 +429,9 @@
     if (item.type === "text") {
       var tx = $("text-" + itemId);
       var text = (tx ? tx.value : "").trim();
-      if (text.length < 20) {
-        setStatus(itemId, "再多写几个字（至少 20 字），系统不判对错，只记录你的想法", "err");
+      var need = item.minLen || 20;
+      if (text.length < need) {
+        setStatus(itemId, "再多写几个字（至少 " + need + " 字），系统不判对错，只记录你的想法", "err");
         DZHT.core.motion.shake($("task-" + itemId));
         return;
       }

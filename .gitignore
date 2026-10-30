@@ -26,6 +26,13 @@ node_modules/
 Thumbs.db
 *.log
 
+# WorkBuddy 本地工作数据（记忆日志、会话状态），不进版本库
+.workbuddy/
+
+# 临时校验脚本（_check_*.js / _diag_*.js 用完即删）
+/tools/_*.js
+/tools/_*.py
+
 # 说明：v1 的 _probe.js / _shot*.js / _shots/ / _compose_hd.py / _不用了-二维码/
 #       是 v1 版本的一部分，已在 v1.0.0 提交中跟踪，**故意保留**。
 #       v2/_test.js 是 v2 的验收脚本，也保留。

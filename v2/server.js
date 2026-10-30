@@ -87,11 +87,18 @@ const MIME = {
   ".woff2": "font/woff2"
 };
 
-// 不对外暴露：.env（含 key）、node_modules、.git、以及探测脚本
+// 不对外暴露的文件（相对 v2 目录）
+// 注意：data/corpus.json 必须保留可访问 —— 前端启动时要 fetch 它。
 const DENY = [
-  /^\.env/,
+  /^\.env/,              // 含模型 key
   /^\.git[\\/]/,
   /^node_modules[\\/]/,
+  // 服务端逻辑：浏览器不需要，暴露出去只是把内部实现摊开
+  /^server\.js$/,
+  /^api[\\/]/,           // api/chat.js 含完整 prompt 与检索配置
+  /^package(-lock)?\.json$/,
+  /^_test\.js$/,         // 验收脚本，只在命令行跑
+  /^_check_.*\.js$/,
   /^_probe\.js$/,
   /^_checkdom\.js$/,
   /^_shot.*\.js$/,
@@ -102,11 +109,37 @@ function serveStatic(req, res, pathname) {
   let rel = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
   try { rel = decodeURIComponent(rel); } catch (e) { res.statusCode = 400; res.end("Bad Request"); return; }
 
-  if (DENY.some((re) => re.test(rel))) { res.statusCode = 403; res.end("Forbidden"); return; }
-
+  // 先把路径解析成绝对路径，再做安全判断。
+  //
+  // 顺序很关键：如果先用原始 rel 做 DENY 匹配，`/%2e/.env` 经 decode 得到
+  // `./.env`，能绕过 /^\.env/ 的正则；解析后反而指到 ROOT/.env，
+  // 于是 `.env`（内含模型 key）就被直接返回了。
+  // 正确做法是：解析 → 确认在 ROOT 内 → 用**规范化后的相对路径**做敏感文件匹配。
   const file = path.resolve(ROOT, rel);
   const relCheck = path.relative(ROOT, file);
+
+  // 目录穿越
   if (relCheck.startsWith("..") || path.isAbsolute(relCheck)) {
+    res.statusCode = 403; res.end("Forbidden"); return;
+  }
+
+  // 统一分隔符后再判断（Windows 下 relCheck 用的是反斜杠）
+  const normalized = relCheck.split(path.sep).join("/");
+
+  // 敏感文件：.env / 任意层级的 .git / node_modules / 证书私钥
+  // 注意 relCheck 相对的是 v2 目录，所以用「路径片段」匹配而不是文件名前缀。
+  const SENSITIVE = [
+    /(^|\/)\.env(\.|$)/i,          // .env、.env.local、.env.production
+    /(^|\/)\.git(\/|$)/i,          // .git 目录
+    /(^|\/)node_modules\//i,
+    /(^|\/)\.vercel(\/|$)/i,
+    /\.(pem|key|pfx|p12)$/i
+  ];
+
+  if (SENSITIVE.some((re) => re.test(normalized))) {
+    res.statusCode = 403; res.end("Forbidden"); return;
+  }
+  if (DENY.some((re) => re.test(normalized))) {
     res.statusCode = 403; res.end("Forbidden"); return;
   }
 

@@ -24,10 +24,15 @@
       name: "初中",
       full: "初中（7–9 年级）",
       desc: "看得见、说得出的基础观察与因果",
-      taskCount: 3,
-      preferTypes: ["photo", "choice", "order"],
+      // 四题全做：「说」（写下自述）是计划书 2.1 动线里的固定环节，
+      // 也是评分引擎「自我表达」项唯一的数据来源，不能因为学段低就省掉。
+      // 学段差异体现在自述字数与题目深度上，不体现在"有没有这道题"。
+      taskCount: 4,
+      preferTypes: ["photo", "choice", "order", "text"],
       cognitive: ["观察", "理解", "因果"],
-      tone: "以现场可见的事实为主，问题短、指令明确"
+      tone: "以现场可见的事实为主，问题短、指令明确",
+      // 初中的自述只要求 15 字，高中要求 20 字
+      textMinLen: 15
     },
     {
       id: "senior",
@@ -37,7 +42,8 @@
       taskCount: 4,
       preferTypes: ["photo", "choice", "order", "text"],
       cognitive: ["史料", "互证", "论证", "评价"],
-      tone: "强调史料出处与历史解释，允许并鼓励提出自己的判断"
+      tone: "强调史料出处与历史解释，允许并鼓励提出自己的判断",
+      textMinLen: 20
     }
   ];
 
@@ -72,21 +78,53 @@
       return (t.points || []).indexOf(point.id) >= 0;
     });
 
-    // 按学段偏好顺序取，先看类型偏好，再看 stage 顺序（看→想→理→说）
-    var ordered = pool.slice().sort(function (a, b) {
+    var TYPE_ORDER = ["photo", "choice", "order", "text"];
+
+    // 必做题：photo（现场观察）与 text（写下自述）。
+    // 这两题分别对应评分引擎的「现场观察」与「自我表达」，
+    // 少了任何一项，报告里就会有一格永远拿 0 分，学生看到会困惑。
+    // 所以不依赖切片顺序，先固定锁住这两题，再按学段偏好填空。
+    var REQUIRED = ["photo", "text"];
+
+    function pickOne(type, from) {
+      for (var i = 0; i < from.length; i++) if (from[i].type === type) return from[i];
+      return null;
+    }
+
+    var chosen = [];
+    var rest = pool.slice();
+
+    REQUIRED.forEach(function (type) {
+      var t = pickOne(type, rest);
+      if (t) {
+        chosen.push(t);
+        rest = rest.filter(function (x) { return x !== t; });
+      }
+    });
+
+    // 剩余名额按学段偏好补齐（先看类型偏好，再看看→想→理→说的顺序）
+    var remain = Math.max(0, grade.taskCount - chosen.length);
+    var filler = rest.slice().sort(function (a, b) {
       var ai = grade.preferTypes.indexOf(a.type);
       var bi = grade.preferTypes.indexOf(b.type);
       if (ai < 0) ai = 99;
       if (bi < 0) bi = 99;
       if (ai !== bi) return ai - bi;
-      var as = ["photo", "choice", "order", "text"];
-      return as.indexOf(a.type) - as.indexOf(b.type);
-    });
+      return TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type);
+    }).slice(0, remain);
 
-    var chosen = ordered.slice(0, grade.taskCount);
+    chosen = chosen.concat(filler);
+
+    // 最终按「看→想→理→说」的教学顺序排列，不按选取顺序
+    chosen.sort(function (a, b) {
+      return TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type);
+    });
 
     var items = chosen.map(function (t, idx) {
       var meta = TYPE_CATEGORY[t.type] || { category: "综合题", verb: "做" };
+      // 自述题的字数要求按学段覆盖（初中 15 字、高中 20 字）
+      var minLen = t.minLen || 0;
+      if (t.type === "text" && grade.textMinLen) minLen = grade.textMinLen;
       var item = {
         id: t.id,
         index: idx,
@@ -101,7 +139,7 @@
         answer: typeof t.answer === "number" ? t.answer : null,
         events: t.events || null,
         placeholder: t.placeholder || "",
-        minLen: t.minLen || 0,
+        minLen: minLen,
         maxLen: t.maxLen || 200,
         reasonMinLen: t.reasonMinLen || 0,
         hint: t.hint || "",
