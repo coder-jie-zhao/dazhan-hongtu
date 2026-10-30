@@ -212,10 +212,22 @@ async function handler(req, res) {
   try {
     const system = P.buildSystemPrompt(role, tops, pointName, { scopeTopics: POINT_SCOPE[point] });
     const answer = await callLLM(system, question);
+
+    // 模型会按提示词规则「原样」输出拒答话术。答案本身是对的，但如果
+    // 不把 refusal 标出来，界面就会把它当普通回答渲染，还照样挂上史料出处——
+    // 学生看到的就是「一段带出处的话」，实际却是一句拒答。
+    //
+    // 实测两种拒答形态都要覆盖：
+    //   1) 标准话术：「这个问题超出了…已审核史料的范围…」
+    //   2) 人话变体：「这个我说不了——我手上只有…，我不能凭印象给你排先后。」
+    // 第 2 种如果漏判，界面会把拒答当成有依据的答案显示，这是最坏的形态。
+    const isRefusal = !answer ||
+      /【拒答】|超出了[\s\S]{0,24}已审核史料|只能依据审核过的史料|我说不了|不能凭印象|不在我能依据的史料/.test(answer);
+
     res.status(200).json({
       answer: answer || pickRefusal(point),
-      sources: uniqueSources,
-      refusal: false,
+      sources: isRefusal ? [] : uniqueSources,
+      refusal: isRefusal,
       mode: "model",
       // 用了查询改写时回传，便于排查「为什么这个问题能答了」
       rewritten: rewritten || undefined
