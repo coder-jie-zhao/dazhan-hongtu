@@ -114,6 +114,12 @@
   }
 
   function showPhoto(src, caption) {
+    // 先移除上一次可能残留的预览框：每次点击都会新建一个 #photo-modal 节点，
+    // 若只靠关闭时隐藏（remove "show"）而不移除节点，反复打开会产生多个同名节点，
+    // 导致后续关闭按钮只作用于第一个隐藏节点、当前可见框关不掉（点两次后失效）。
+    var prev = document.getElementById("photo-modal");
+    if (prev) prev.remove();
+
     var html =
       '<div class="modal show" id="photo-modal">' +
         '<div class="modal-mask" data-close="photo-modal"></div>' +

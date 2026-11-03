@@ -51,3 +51,5 @@ __pycache__/
 # 说明：v1 的 _probe.js / _shot*.js / _shots/ / _compose_hd.py / _不用了-二维码/
 #       是 v1 版本的一部分，已在 v1.0.0 提交中跟踪，**故意保留**。
 #       v2/_test.js 是 v2 的验收脚本，也保留。
+# 临时供 Vercel 导入的含 key 文件，禁止入库（导入后删除）
+vercel-env.env
