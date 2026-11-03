@@ -1,0 +1,16 @@
+{
+  "name": "dazhan-hongtu-v2",
+  "version": "2.0.0",
+  "private": true,
+  "description": "大展红途 v2 · 井冈山红色研学智能导览（三点位）",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node _test.js",
+    "build:fallback": "python ../tools/build_fallback.py",
+    "shoot": "node ../tools/shoot_v2.js"
+  }
+}
