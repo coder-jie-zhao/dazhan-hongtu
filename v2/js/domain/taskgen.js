@@ -20,6 +20,20 @@
   /* 学段配置：难度递进 + 任务类型偏好 */
   var GRADES = [
     {
+      id: "primary",
+      name: "小学",
+      full: "小学（4–6 年级）",
+      desc: "看见什么、听见什么，讲给大家听",
+      // 小学段只做「看—想—说」的浅层认知：不要求史料互证，也不要求论证观点。
+      // 题目与初中高中同源（同一批点位任务），差别落在自述门槛与说明语气上。
+      taskCount: 4,
+      preferTypes: ["photo", "text", "choice", "order"],
+      cognitive: ["观察", "讲述"],
+      tone: "以现场看得见、摸得着的实物为主，一次只问一件事，不要求分析原因",
+      // 小学的自述只要求 10 字；初中 15、高中 20
+      textMinLen: 10
+    },
+    {
       id: "junior",
       name: "初中",
       full: "初中（7–9 年级）",
@@ -57,6 +71,8 @@
 
   function gradeById(id) {
     for (var i = 0; i < GRADES.length; i++) if (GRADES[i].id === id) return GRADES[i];
+    // 未知学段一律退到初中：小学排在数组第一位，直接取 GRADES[0] 会让默认值漂到小学
+    for (var j = 0; j < GRADES.length; j++) if (GRADES[j].id === "junior") return GRADES[j];
     return GRADES[0];
   }
 

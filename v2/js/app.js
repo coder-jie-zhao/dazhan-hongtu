@@ -27,7 +27,7 @@
      每个点位的任务 id 与该点位的任务单一致（t1 / t1b / t1c）。 */
   function seedDemo() {
     var S = DZHT.core.store;
-    S.saveUser("赵杰", "东华理工大学", "junior");
+    S.saveUser("研学1号", "东华理工大学", "junior");
     var photoTask = { huangyangjie: "t1", bajiaolou: "t1b", longjiangshuyuan: "t1c" };
     DATA.points.forEach(function (p) {
       var tasks = {};
@@ -111,9 +111,10 @@
   function setupOnboard() {
     var grades = DZHT.domain.tasks.GRADES;
     var box = $("onboard-grade");
+    // 默认初中：小学在 GRADES 里排最前（按年级顺序），但不能因此让默认选中变成小学
     var selected = "junior";
-    box.innerHTML = grades.map(function (g, i) {
-      return '<button class="chip' + (i === 0 ? " active" : "") + '" data-g="' + g.id + '">' + g.name + '</button>';
+    box.innerHTML = grades.map(function (g) {
+      return '<button class="chip' + (g.id === selected ? " active" : "") + '" data-g="' + g.id + '">' + g.name + '</button>';
     }).join("");
 
     box.addEventListener("click", function (e) {
@@ -128,10 +129,10 @@
     $("btn-onboard").addEventListener("click", function () {
       var name = $("inp-name").value.trim();
       var school = $("inp-school").value.trim() || "—";
-      if (!name) { DZHT.core.toast("请先填写姓名"); return; }
+      if (!name) { DZHT.core.toast("先起一个代号再开始"); return; }
       DZHT.core.store.saveUser(name, school, selected);
       $("onboard").classList.remove("show");
-      DZHT.core.toast("你好，" + name + "同学");
+      DZHT.core.toast("代号已记下：" + name);
       DZHT.core.motion.haptic(14);
     });
   }
