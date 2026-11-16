@@ -35,6 +35,7 @@
       comment: $("rpt-comment"),
       no: $("rpt-no"),
       formula: $("rpt-formula"),
+      signDate: $("rpt-sign-date"),
       card: $("report-card")
     };
   }
@@ -96,6 +97,7 @@
     C.el.name.textContent = "研学同学";
     C.el.school.textContent = user.school || "—";
     C.el.no.textContent = "编号 " + reportNo(user);
+    if (C.el.signDate) C.el.signDate.textContent = dateStr;
 
     // 学习轨迹
     var taskDone = Object.keys(prog.tasks || {}).filter(function (k) { return prog.tasks[k]; }).length;
@@ -156,6 +158,10 @@
   }
 
   function bind() {
+    $("btn-print").addEventListener("click", function () {
+      try { root.print(); }
+      catch (e) { DZHT.core.toast("打印不可用，请用浏览器菜单打印"); }
+    });
     $("btn-save").addEventListener("click", function () { saveImage(); });
     $("btn-to-teacher").addEventListener("click", function () { DZHT.core.router.go("teacher"); });
     $("btn-share-report").addEventListener("click", function () {

@@ -65,7 +65,7 @@
 
   /* 背景图轮播，每 6 秒换一张（三个点位轮流） */
   function startHeroCycle() {
-    if (root.DZHT.core.motion.reduceMotion) return;
+    if (root.DZHT.core.motion.reduceMotion || DZHT.core.fieldmode.isOn()) return;
     setInterval(function () {
       if (!document.body.contains(C.el.heroImg)) return;
       heroIdx++;
@@ -170,6 +170,11 @@
         '<span class="tc-icon">◈</span>' +
         '<div class="tc-title">AR 导览</div>' +
         '<div class="tc-desc">方案设计阶段</div>' +
+      '</button>' +
+      '<button class="tool-card card-tap" id="btn-field-mode">' +
+        '<span class="tc-icon">☀</span>' +
+        '<div class="tc-title">现场模式</div>' +
+        '<div class="tc-desc" id="field-mode-desc">大字 · 关动效 · 省电</div>' +
       '</button>';
   }
 
@@ -202,10 +207,20 @@
     });
 
     C.el.tools.addEventListener("click", function (e) {
+      var fm = e.target.closest("#btn-field-mode");
+      if (fm) {
+        var on = DZHT.core.fieldmode.toggle();
+        var desc = $("field-mode-desc");
+        if (desc) desc.textContent = on ? "已开启 · 点此关闭" : "大字 · 关动效 · 省电";
+        DZHT.core.toast(on ? "现场模式已开启" : "现场模式已关闭");
+        return;
+      }
       var t = e.target.closest("[data-nav]");
       if (!t) return;
       DZHT.core.router.go(t.getAttribute("data-nav"));
     });
+    var fmDesc = $("field-mode-desc");
+    if (fmDesc && DZHT.core.fieldmode.isOn()) fmDesc.textContent = "已开启 · 点此关闭";
   }
 
   function openOnboard() {

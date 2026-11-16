@@ -165,6 +165,7 @@
       // 初始化核心
       DZHT.core.store.load();
       DZHT.core.toast = toast;
+      DZHT.core.fieldmode.boot();
       if (EMBED) document.body.classList.add("embed");
       if (DEMO) seedDemo();
 

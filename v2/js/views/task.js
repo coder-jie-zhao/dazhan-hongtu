@@ -155,6 +155,18 @@
         wrap.querySelectorAll(".sort-item").forEach(function (el) { byOrder[el.getAttribute("data-order")] = el; });
         wrap.innerHTML = "";
         item.events.forEach(function (_, i) { if (byOrder[String(i)]) wrap.appendChild(byOrder[String(i)]); });
+        if (!$("timeline-" + item.id)) {
+          var tl = document.createElement("div");
+          tl.id = "timeline-" + item.id;
+          tl.className = "order-timeline";
+          tl.innerHTML = '<div class="ot-title">正确顺序</div><div class="ot-track">' +
+            item.events.map(function (ev, i) {
+              return '<div class="ot-node"><span class="ot-dot">' + (i + 1) + '</span>' +
+                '<span class="ot-time">' + esc(ev.t) + '</span>' +
+                '<span class="ot-event">' + esc(ev.e) + '</span></div>';
+            }).join("") + '</div>';
+          wrap.parentNode.insertBefore(tl, wrap.nextSibling);
+        }
       }
     }
     if (item.type === "text" && prog.selfText) {
@@ -416,7 +428,12 @@
       var correct = item.events.map(function (_, i) { return i; });
       var ok = order.length === correct.length && order.every(function (v, i2) { return v === correct[i2]; });
       if (!ok) {
-        setStatus(itemId, "顺序不对，再试试（时间越早越靠前）", "err");
+        // 标出站位错的卡片：第 i 位该放 i，放的不是就标错位
+        wrap.querySelectorAll(".sort-item").forEach(function (el, pos) {
+          var v = parseInt(el.getAttribute("data-order"), 10);
+          el.classList.toggle("misplaced", v !== pos);
+        });
+        setStatus(itemId, "顺序不对，标出的几张放错位置了（时间越早越靠前）", "err");
         DZHT.core.motion.shake($("task-" + itemId));
         return;
       }

@@ -110,6 +110,12 @@
       <span id="ai-mode-text">正在识别回答来源…</span>
     </div>
 
+    <label class="speech-toggle" id="speech-toggle" hidden>
+      <input type="checkbox" id="speech-auto" />
+      <span class="st-track"><span class="st-knob"></span></span>
+      <span class="st-label">自动朗读</span>
+    </label>
+
     <div class="chat-body" id="chat-body">
       <div class="chat-hint" id="chat-hint">
         <p class="title-sm">选一个身份，问问当年的事。</p>
@@ -194,6 +200,16 @@
           <div class="rpt-comment" id="rpt-comment"></div>
         </div>
 
+        <div class="rpt-signoff" id="rpt-signoff">
+          <div class="rpt-sign-title">带队教师确认</div>
+          <div class="rpt-sign-grid">
+            <div class="rpt-sign-line"><span>学校（盖章）：</span></div>
+            <div class="rpt-sign-line"><span>教师签名：</span></div>
+            <div class="rpt-sign-line"><span>日期：</span><span class="rpt-sign-date" id="rpt-sign-date"></span></div>
+          </div>
+          <div class="rpt-sign-note">本报告二维码与匿名编号对应，不采集学生真实姓名。</div>
+        </div>
+
         <div class="rpt-foot">
           <span class="rpt-brand">大展红途</span>
           <span class="rpt-no" id="rpt-no">编号 DZHT-2026-0000</span>
@@ -204,7 +220,8 @@
       <div class="rpt-formula" id="rpt-formula"></div>
 
       <div class="btn-row">
-        <button class="btn btn-primary" id="btn-save">保存报告图片</button>
+        <button class="btn btn-primary" id="btn-print">打印 / 存为 PDF</button>
+        <button class="btn btn-ghost" id="btn-save">保存报告图片</button>
         <button class="btn btn-ghost" id="btn-to-teacher">班级视图</button>
       </div>
     </div>
@@ -387,12 +404,29 @@
   </div>
 </div>
 
+<div class="modal" id="source-modal">
+  <div class="modal-mask" data-close="source-modal"></div>
+  <div class="modal-card src-card">
+    <div class="src-card-kicker">史料原文 · 本地可查</div>
+    <h3 class="modal-title" id="src-card-title">史料原文</h3>
+    <div class="src-card-meta">
+      <span id="src-card-source">—</span>
+      <span class="src-card-year"><span id="src-card-year">—</span> 年</span>
+    </div>
+    <div class="src-card-text" id="src-card-text"></div>
+    <a class="src-card-link" id="src-card-link" target="_blank" rel="noopener">打开原始网页 ↗</a>
+    <button class="btn btn-primary" data-close="source-modal">知道了</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="js/core/store.js"></script>
 <script src="js/core/motion.js"></script>
 <script src="js/core/router.js"></script>
 <script src="js/core/net.js"></script>
+<script src="js/core/speech.js"></script>
+<script src="js/core/fieldmode.js"></script>
 <script src="js/core/demo.js"></script>
 <script src="js/domain/retrieval.js"></script>
 <script src="js/domain/scoring.js"></script>
