@@ -98,7 +98,41 @@
    *
    * v1 的 api/comment.js 真的调了 LLM，与计划书自相矛盾 —— 这版删除该行为。
    */
-  function buildComment(state, pointName) {
+  /**
+   * 小学版评语 —— 与中学版同一套模板骨架，但换了措辞：
+   *   句子更短、更具体，避开「求证」「刨根问底」「过程性记录」这类抽象词。
+   *   小学 4–6 年级能读懂、愿意读下去，比「措辞得体」更重要。
+   * 仍然不调模型，仍然只引用学生自己写的原话（计划书 2.6）。
+   */
+  function buildCommentPrimary(state, pointName) {
+    var qs = (state && state.questions) || [];
+    var reason = ((state && state.reason) || "").trim();
+    var selfText = ((state && state.selfText) || "").trim();
+    var place = pointName || "这里";
+    var last = qs.length ? String(qs[qs.length - 1]).replace(/[？?。！!]$/, "") : "";
+
+    if (!qs.length && !selfText) {
+      return "你在" + place + "看了、也做了任务，很好。下次试着把心里的问号说出来——" +
+        "看到一个东西，先问问自己「这是什么、为什么会这样」，再问讲解员。";
+    }
+    if (!qs.length) {
+      return "你在" + place + "写下了自己的想法：" + trimQuote(selfText) + "。" +
+        "能把看到的写下来，就是很棒的记录。下次还可以问讲解员一个问题，看看答案和你想的一样吗。";
+    }
+    if (!reason && !selfText) {
+      return "你问了「" + last + "」，说明你在认真找答案，很好。" +
+        "下次可以再写一两句话，说说你是怎么想的。";
+    }
+    if (!reason) {
+      return "你问了「" + last + "」，还写下了自己的想法：" + trimQuote(selfText) + "。" +
+        "又会问、又会写，这就是研学里最棒的样子。";
+    }
+    return "你追着「" + last + "」一直问，还写下了自己的解释：" + trimQuote(reason) + "。" +
+      "能把「为什么」说清楚，比只记住答案厉害多了。";
+  }
+
+  function buildComment(state, pointName, gradeId) {
+    if (gradeId === "primary") return buildCommentPrimary(state, pointName);
     var qs = (state && state.questions) || [];
     var reason = ((state && state.reason) || "").trim();
     var selfText = ((state && state.selfText) || "").trim();

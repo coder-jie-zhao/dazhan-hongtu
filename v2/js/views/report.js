@@ -131,12 +131,12 @@
     var thought = (prog.selfText || "").trim() || (prog.reason || "").trim();
     C.el.thought.textContent = thought ? "「" + thought + "」" : "（未填写）";
 
-    // 评语：模板拼接，不调模型
+    // 评语：模板拼接，不调模型；小学段走另一套更口语的措辞
     C.el.comment.textContent = DZHT.domain.scoring.buildComment({
       questions: prog.questions || [],
       reason: prog.reason || "",
       selfText: prog.selfText || ""
-    }, p.name);
+    }, p.name, gradeCfg.id);
 
     // 评分规则说明
     C.el.formula.innerHTML =
