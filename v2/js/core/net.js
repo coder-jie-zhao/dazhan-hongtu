@@ -162,12 +162,14 @@
       };
     }
 
-    // 检索命中但离线问答库没有现成措辞 → 用史料原文直出（标注来源），不编造
+    // 检索命中但离线问答库没有现成措辞 → 优先用人工打磨过的口语讲解（spoken），
+    // 没有 spoken 的条目仍用史料原文直出。两者都带原出处，不新增任何史实。
+    var spoken = docs[0].spoken;
     return {
-      answer: docs[0].text,
+      answer: spoken || docs[0].text,
       sources: [docs[0].source],
       refusal: false,
-      mode: "offline-retrieval"
+      mode: spoken ? "offline-spoken" : "offline-retrieval"
     };
   }
 
