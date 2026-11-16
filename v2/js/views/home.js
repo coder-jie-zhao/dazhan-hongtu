@@ -137,9 +137,10 @@
       return;
     }
     if (started === 0) {
+      var code = (store.ensureCode && store.ensureCode()) || "JX-0000";
       C.el.cta.innerHTML =
         '<button class="btn btn-primary btn-lg" data-act="go-first">开始研学</button>' +
-        '<p class="tiny dimmer center mt-2">你好，' + esc(user.name) + '。选一个点位开始。</p>';
+        '<p class="tiny dimmer center mt-2">你好，研学同学 ' + esc(code) + '。选一个点位开始。</p>';
       return;
     }
     C.el.cta.innerHTML =

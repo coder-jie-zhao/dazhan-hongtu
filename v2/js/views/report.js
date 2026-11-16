@@ -55,8 +55,10 @@
   }
 
   function reportNo(user) {
-    // 报告编号：由姓名与点位派生，同一个人同一个点位编号稳定
-    var s = (user && user.name ? user.name : "同学") + "|" + currentPoint().id;
+    // 报告编号：由「匿名编号 + 点位」派生，同一人同点位编号稳定。
+    // 刻意不用代号（可能被填成真名）：编号无法反推填表内容。
+    var code = (user && user.code) || (DZHT.core.store.ensureCode && DZHT.core.store.ensureCode()) || "JX-0000";
+    var s = code + "|" + currentPoint().id;
     var h = 0;
     for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
     return "DZHT-2026-" + String(h % 10000).padStart(4, "0");
@@ -89,7 +91,9 @@
 
     C.el.point.textContent = p.name;
     C.el.date.textContent = dateStr;
-    C.el.name.textContent = user.name || "同学";
+    // 报告抬头刻意不出现代号：代号由学生自拟，可能被填成真名。
+    // 报告上只有匿名编号，这份报告即使打印、拍照、外传也不携带身份信息。
+    C.el.name.textContent = "研学同学";
     C.el.school.textContent = user.school || "—";
     C.el.no.textContent = "编号 " + reportNo(user);
 

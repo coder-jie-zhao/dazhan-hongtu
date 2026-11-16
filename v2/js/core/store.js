@@ -72,11 +72,30 @@
   /* ---------- 用户 ---------- */
   function getUser() { return state.user; }
 
+  /* 匿名编号：本机随机生成一次，此后不变。
+     报告编号、教师端明细一律引用它，绝不引用代号本身 —— 代号可能被学生写成真名，
+     而编号与代号之间无任何可逆关系（不参与生成），泄露编号也回溯不到人。 */
+  function makeAnonCode() {
+    var n = Math.floor(Math.random() * 9000) + 1000;
+    return "JX-" + String(n);
+  }
+
+  /* 注意：第一个参数是「代号」，不是姓名。前端不索要、也不校验真实姓名。 */
   function saveUser(name, school, grade) {
-    state.user = { name: name, school: school || "—", grade: grade || "junior" };
+    state.user = { name: name, school: school || "—", grade: grade || "junior", code: makeAnonCode() };
     lsSet(USER_KEY, JSON.stringify(state.user));
     emit("user");
     return state.user;
+  }
+
+  /* 老数据（无 code 字段）补发一次编号 */
+  function ensureCode() {
+    if (!state.user) return null;
+    if (!state.user.code) {
+      state.user.code = makeAnonCode();
+      lsSet(USER_KEY, JSON.stringify(state.user));
+    }
+    return state.user.code;
   }
 
   function updateUser(patch) {
@@ -165,6 +184,7 @@
     emit: emit,
     getUser: getUser,
     saveUser: saveUser,
+    ensureCode: ensureCode,
     updateUser: updateUser,
     getProgress: getProgress,
     setProgress: setProgress,

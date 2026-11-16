@@ -231,7 +231,7 @@
         </div>
 
         <div class="tch-block">
-          <div class="tch-block-title">逐人明细<span class="sec-extra">姓名已替换为学校生成的匿名编号</span></div>
+          <div class="tch-block-title">逐人明细<span class="sec-extra">匿名编号由系统生成，不含姓名</span></div>
           <div class="table-scroll">
             <table class="teacher-table">
               <thead><tr><th>匿名编号</th><th>点位</th><th>任务</th><th>提问</th><th>用时</th></tr></thead>
@@ -360,12 +360,12 @@
   <div class="modal-mask" data-close="onboard"></div>
   <div class="modal-card">
     <h3 class="modal-title">欢迎来到井冈山</h3>
-    <p class="modal-sub">先认识一下，之后不再重复问</p>
-    <input class="modal-input" type="text" id="inp-name" placeholder="你的姓名" maxlength="12" autocomplete="off" />
-    <input class="modal-input" type="text" id="inp-school" placeholder="你的学校" maxlength="24" autocomplete="off" />
+    <p class="modal-sub">不用填真名，起一个代号就行</p>
+    <input class="modal-input" type="text" id="inp-name" placeholder="给自己起个代号（不用真名）" maxlength="12" autocomplete="off" />
+    <input class="modal-input" type="text" id="inp-school" placeholder="你的学校（可留空）" maxlength="24" autocomplete="off" />
     <div class="grade-pick" id="onboard-grade"></div>
     <button class="btn btn-primary" id="btn-onboard">开始研学</button>
-    <p class="micro dimmer center">我们不采集你的手机号，也不留存照片。</p>
+    <p class="micro dimmer center">不采集真实姓名与手机号，代号和匿名编号只存在这台设备上。</p>
   </div>
 </div>
 
