@@ -22,6 +22,7 @@
   }
 
   var C = { data: null, grade: "junior", point: null, inited: false };
+  var DRAFT_KEY = "dzht_v2_teacher_drafts";
 
   /* 演示数据：全部使用匿名编号，无真实姓名
      —— 与计划书 6.3「系统不采集学生姓名」一致 */
@@ -139,28 +140,67 @@
     renderPlan();
   }
 
+  function draftId() { return (C.point || "huangyangjie") + "|" + C.grade; }
+
+  function loadDraft() {
+    try {
+      var all = JSON.parse(root.localStorage.getItem(DRAFT_KEY) || "{}");
+      return all[draftId()] || { edits: {}, removed: [], added: [] };
+    } catch (e) { return { edits: {}, removed: [], added: [] }; }
+  }
+
+  function saveDraft(d) {
+    try {
+      var all = JSON.parse(root.localStorage.getItem(DRAFT_KEY) || "{}");
+      all[draftId()] = d;
+      root.localStorage.setItem(DRAFT_KEY, JSON.stringify(all));
+    } catch (e) { /* file:// 忽略 */ }
+  }
+
   function renderPlan() {
     var pointId = C.point || (DZHT.views.point.point() || {}).id || C.data.points[0].id;
     var plan = DZHT.domain.tasks.generate(C.data, pointId, C.grade);
+    var draft = loadDraft();
+
+    // 应用草稿：改题干、删题、加自定义题
+    var items = [];
+    plan.items.forEach(function (it, i) {
+      if (draft.removed.indexOf(String(i)) >= 0) return;
+      items.push(Object.assign({}, it, {
+        _i: i,
+        q: draft.edits[i] != null ? draft.edits[i] : (it.question || it.desc || "")
+      }));
+    });
+    (draft.added || []).forEach(function (t) {
+      items.push({ verb: "问", title: t.title || "自定义任务", category: "拓展", q: t.q, rationale: "教师补充" });
+    });
 
     C.el.tgOut.innerHTML =
       '<div class="row-between mb-3">' +
         '<span class="badge badge-gold">' + esc(plan.point.name) + ' · ' + esc(plan.grade.full) + '</span>' +
-        '<span class="micro dimmer">' + plan.items.length + ' 题 · ' + esc(plan.grade.desc) + '</span>' +
+        '<span class="micro dimmer">' + items.length + ' 题 · 可改</span>' +
       '</div>' +
-      plan.items.map(function (it, i) {
-        var q = it.question || it.desc || "";
-        return '<div class="tg-item">' +
+      items.map(function (it) {
+        var i = it._i;
+        return '<div class="tg-item" data-idx="' + i + '">' +
           '<div class="tg-item-head">' +
-            '<span class="badge">' + (i + 1) + ' · ' + esc(it.verb) + '</span>' +
+            '<span class="badge">' + esc(it.verb) + '</span>' +
             '<span class="tg-item-title">' + esc(it.title) + '</span>' +
-            '<span class="badge badge-ink">' + esc(it.category) + '</span>' +
+            '<span class="tg-item-edit">' +
+              (i != null ? '<button data-edit="' + i + '" title="改题干">改</button>' +
+                '<button data-del="' + i + '" title="删除">删</button>' : '<button data-deladd="' + esc(it.title) + '" title="删除">删</button>') +
+            '</span>' +
           '</div>' +
-          (q ? '<div class="tg-item-q">' + esc(q) + '</div>' : "") +
+          (it.q ? '<div class="tg-item-q">' + esc(it.q) + '</div>' : "") +
           '<div class="tg-item-why">' + esc(it.rationale) + '</div>' +
         '</div>';
       }).join("") +
-      '<div class="privacy-note"><span>✓</span><span>任务单按课标「观察—思考—实践」三类组织，生成逻辑对教师完全透明，可按需调整。</span></div>';
+      '<div class="tg-actions">' +
+        '<button class="btn btn-secondary btn-sm" id="tg-add">＋ 加一题</button>' +
+        '<button class="btn btn-ghost btn-sm" id="tg-reset">恢复默认</button>' +
+        '<button class="btn btn-primary btn-sm" id="tg-export">导出任务单</button>' +
+      '</div>' +
+      '<div class="privacy-note"><span>✓</span><span>任务单按课标「观察—思考—实践」三类组织；改动只存在本机浏览器，不上传。</span></div>';
   }
 
   function bind() {
@@ -186,6 +226,49 @@
       DZHT.core.motion.haptic(8);
     });
 
+    // 任务单编辑：改题干 / 删题 / 加题 / 复位 / 导出
+    C.el.tgOut.addEventListener("click", function (e) {
+      var d = loadDraft();
+      var edit = e.target.closest("[data-edit]");
+      if (edit) {
+        var idx = edit.getAttribute("data-edit");
+        var cur = d.edits[idx];
+        var val = root.prompt("修改这道题的题干：", cur == null ? (C.el.tgOut.querySelector('[data-idx="' + idx + '"] .tg-item-q') || {}).textContent || "" : cur);
+        if (val != null) { d.edits[idx] = val.trim(); saveDraft(d); renderPlan(); }
+        return;
+      }
+      var del = e.target.closest("[data-del]");
+      if (del) {
+        var di = del.getAttribute("data-del");
+        if (d.removed.indexOf(di) < 0) d.removed.push(di);
+        saveDraft(d); renderPlan();
+        return;
+      }
+      var delAdd = e.target.closest("[data-deladd]");
+      if (delAdd) {
+        var title = delAdd.getAttribute("data-deladd");
+        d.added = (d.added || []).filter(function (t) { return t.title !== title; });
+        saveDraft(d); renderPlan();
+        return;
+      }
+      if (e.target.closest("#tg-add")) {
+        var q = root.prompt("输入自定义任务（学生要做什么）：", "");
+        if (q && q.trim()) {
+          d.added = d.added || [];
+          d.added.push({ title: "自定义题" + (d.added.length + 1), q: q.trim() });
+          saveDraft(d); renderPlan();
+        }
+        return;
+      }
+      if (e.target.closest("#tg-reset")) {
+        if (root.confirm("恢复为系统默认任务单？你做的改动会清除。")) {
+          saveDraft({ edits: {}, removed: [], added: [] }); renderPlan();
+        }
+        return;
+      }
+      if (e.target.closest("#tg-export")) exportPlan();
+    });
+
     C.el.tools.addEventListener("click", function (e) {
       var tool = e.target.closest("[data-tool]");
       if (tool) {
@@ -198,6 +281,40 @@
       if (!t) return;
       DZHT.core.router.go(t.getAttribute("data-nav"));
     });
+  }
+
+  function exportPlan() {
+    var pointId = C.point || C.data.points[0].id;
+    var plan = DZHT.domain.tasks.generate(C.data, pointId, C.grade);
+    var draft = loadDraft();
+    var lines = ["大展红途 · 研学任务单", plan.point.name + " · " + plan.grade.full, ""];
+    var n = 0;
+    plan.items.forEach(function (it, i) {
+      if (draft.removed.indexOf(String(i)) >= 0) return;
+      n++;
+      var q = draft.edits[i] != null ? draft.edits[i] : (it.question || it.desc || "");
+      lines.push(n + ". [" + it.verb + "] " + it.title);
+      if (q) lines.push("   " + q);
+      lines.push("");
+    });
+    (draft.added || []).forEach(function (t) {
+      n++;
+      lines.push(n + ". [问] " + t.title);
+      lines.push("   " + t.q);
+      lines.push("");
+    });
+    lines.push("—— 教师可打印或复制到班级群 ——");
+
+    var blob = new root.Blob(["\ufeff" + lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    var url = root.URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "任务单_" + plan.point.name + "_" + plan.grade.name + ".txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    root.URL.revokeObjectURL(url);
+    DZHT.core.toast("任务单已导出");
   }
 
   function exportReport() {

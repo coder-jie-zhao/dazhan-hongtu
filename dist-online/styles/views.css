@@ -1117,3 +1117,55 @@ body.field-mode .sort-name,
 body.field-mode .task-option,
 body.field-mode .sugg,
 body.field-mode .ot-event { font-size: 1.1em; }
+
+/* 线路总报告 */
+.sum-head { padding: 20px 18px; margin: 16px 14px 0; }
+.sum-kicker { font-size: 10px; letter-spacing: .16em; color: var(--red-600); font-weight: 700; }
+.sum-title { font-family: var(--serif); font-size: 21px; color: var(--ink-800); margin: 8px 0 14px; }
+.sum-meta { display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: 12px; color: var(--text-2); }
+.sum-meta b { color: var(--ink-800); }
+.sum-no { margin-top: 12px; font-size: 10px; color: var(--gray-3); letter-spacing: .05em; }
+.sum-sec { margin: 20px 14px 0; }
+.sum-sec-title { font-family: var(--serif); font-size: 14px; color: var(--ink-800); margin: 0 0 9px; padding-left: 9px; border-left: 3px solid var(--red-600); }
+.sum-route { padding: 16px 16px 12px; }
+.sum-stop { display: flex; align-items: center; gap: 11px; }
+.sum-stop-dot {
+  flex: 0 0 24px; width: 24px; height: 24px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 11px; font-weight: 700;
+  background: var(--red-600); color: #FFF;
+}
+.sum-stop.todo .sum-stop-dot { background: var(--ink-100); color: var(--gray-2); }
+.sum-stop-body { flex: 1; min-width: 0; }
+.sum-stop-name { font-size: 13.5px; font-weight: 600; color: var(--ink-800); }
+.sum-stop-sub { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.sum-stop-mark { font-size: 15px; color: var(--red-600); }
+.sum-stop.todo .sum-stop-mark { color: var(--gray-3); }
+.sum-stop-line { width: 1px; height: 16px; background: var(--line-2); margin: 2px 0 2px 12px; }
+.sum-scores { padding: 16px; }
+.sum-score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.sum-score-label { flex: 0 0 62px; font-size: 12px; color: var(--text); }
+.sum-score-track { flex: 1; height: 7px; border-radius: 99px; background: var(--ink-050); overflow: hidden; }
+.sum-score-fill { display: block; height: 100%; background: var(--red-600); border-radius: 99px; }
+.sum-score-num { flex: 0 0 24px; text-align: right; font-size: 13px; color: var(--red-700); }
+.sum-score-note { font-size: 10px; color: var(--text-2); opacity: .7; line-height: 1.6; }
+.sum-questions { padding: 14px 16px; }
+.sum-q { display: flex; flex-direction: column; gap: 3px; padding: 8px 0; border-bottom: 1px solid var(--line-2); }
+.sum-q:last-child { border-bottom: 0; }
+.sum-q-point { font-size: 10px; color: var(--red-600); }
+.sum-q-text { font-size: 12.5px; color: var(--text); }
+.sum-empty { font-size: 12px; color: var(--text-2); opacity: .7; }
+.sum-comments { padding: 8px 16px; }
+.sum-comment { padding: 12px 0; border-bottom: 1px solid var(--line-2); }
+.sum-comment:last-child { border-bottom: 0; }
+.sum-comment-at { font-size: 11px; font-weight: 700; color: var(--red-600); margin-bottom: 5px; }
+.sum-comment-text { font-size: 12.5px; line-height: 1.8; color: var(--text); font-family: var(--serif); }
+.sum-disclaimer { font-size: 10px; color: var(--text-2); opacity: .65; line-height: 1.7; margin: 16px 16px 30px; text-align: center; }
+
+/* 教师端任务单编辑 */
+.tg-item-edit { margin-left: auto; display: inline-flex; gap: 4px; }
+.tg-item-edit button {
+  border: 1px solid var(--line-2); background: var(--paper); color: var(--text-2);
+  border-radius: 6px; font-size: 11px; padding: 2px 7px; cursor: pointer;
+}
+.tg-item-edit button:active { background: var(--ink-050); }
+.tg-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }

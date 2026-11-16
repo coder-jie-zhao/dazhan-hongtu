@@ -140,7 +140,7 @@
   /* ---------- 路由注册 ---------- */
   function registerViews() {
     var router = DZHT.core.router;
-    var views = ["home", "point", "chat", "task", "report", "teacher", "audit", "selftest", "ar"];
+    var views = ["home", "point", "chat", "task", "report", "summary", "teacher", "audit", "selftest", "ar"];
     views.forEach(function (name) {
       var mod = DZHT.views[name];
       if (!mod) return;

@@ -222,8 +222,48 @@
       <div class="btn-row">
         <button class="btn btn-primary" id="btn-print">打印 / 存为 PDF</button>
         <button class="btn btn-ghost" id="btn-save">保存报告图片</button>
+        <button class="btn btn-ghost" data-nav="summary">线路总报告</button>
         <button class="btn btn-ghost" id="btn-to-teacher">班级视图</button>
       </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-summary">
+    <header class="sub-header">
+      <button class="back" data-act="report" aria-label="返回"></button>
+      <h2 class="sub-title">线路总报告</h2>
+      <span class="sub-spacer"></span>
+    </header>
+
+    <div class="page">
+      <div class="sum-head card">
+        <div class="sum-kicker">三处旧址 · 一次研学</div>
+        <h3 class="sum-title">这次研学，我收获了什么</h3>
+        <div class="sum-meta" id="sum-meta"></div>
+        <div class="sum-no" id="sum-no"></div>
+      </div>
+
+      <div class="sum-sec">
+        <h4 class="sum-sec-title">研学线路</h4>
+        <div class="card sum-route" id="sum-route"></div>
+      </div>
+
+      <div class="sum-sec">
+        <h4 class="sum-sec-title">四维能力 · 三处点位平均</h4>
+        <div class="card sum-scores" id="sum-scores"></div>
+      </div>
+
+      <div class="sum-sec">
+        <h4 class="sum-sec-title">我提的问题</h4>
+        <div class="card sum-questions" id="sum-questions"></div>
+      </div>
+
+      <div class="sum-sec">
+        <h4 class="sum-sec-title">各点位评语</h4>
+        <div class="card sum-comments" id="sum-comments"></div>
+      </div>
+
+      <p class="sum-disclaimer">汇总与评语均由固定规则生成，引用你自己写下的原话，全程不调用模型。</p>
     </div>
   </section>
 
@@ -439,6 +479,7 @@
 <script src="js/views/chat.js"></script>
 <script src="js/views/task.js"></script>
 <script src="js/views/report.js"></script>
+<script src="js/views/summary.js"></script>
 <script src="js/views/teacher.js"></script>
 <script src="js/views/audit.js"></script>
 <script src="js/views/selftest.js"></script>
