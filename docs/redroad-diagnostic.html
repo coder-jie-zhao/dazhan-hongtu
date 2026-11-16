@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>专家评审建议</title>
+<style>
+  :root{
+    --teal:#0F4C5C; --teal2:#12707F; --teal-soft:#E3F0F2;
+    --amber:#E8A33D; --amber-soft:#FBF0DC;
+    --green:#15803D; --green-soft:#E3F4E8;
+    --red:#C0563B; --red-soft:#F9E8E2;
+    --ink:#1F2933; --grey:#5C6B73; --line:#E2E8EA; --bg:#F4F7F8; --card:#FFFFFF; --silver:#E5E9EC;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"PingFang SC","Microsoft YaHei",-apple-system,sans-serif; background:var(--bg); color:var(--ink); line-height:1.55;}
+  .wrap{max-width:1080px; margin:0 auto; padding:18px 20px 60px;}
+  .head{background:linear-gradient(120deg,var(--teal),var(--teal2)); color:#fff; border-radius:14px; padding:22px 26px;}
+  .head .tag{display:inline-block; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35); border-radius:999px; font-size:12px; padding:3px 12px; letter-spacing:.5px;}
+  .head h1{font-size:26px; margin-top:10px; font-weight:800;}
+  .head .sub{font-size:13px; opacity:.85; margin-top:4px;}
+  .head .meta{margin-top:12px; font-size:12px; opacity:.75; display:flex; gap:16px; flex-wrap:wrap;}
+  .summary{background:var(--card); border:1px solid var(--line); border-left:5px solid var(--amber); border-radius:12px; padding:14px 18px; margin-top:14px; font-size:14px;}
+  .summary b{color:var(--teal);}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;}
+  @media(max-width:900px){.grid{grid-template-columns:1fr;}}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .card h2{font-size:15px; color:var(--teal); margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+  .card h2 .num{background:var(--teal); color:#fff; font-size:11px; border-radius:6px; padding:2px 8px;}
+  .radar-wrap{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .radar-wrap svg{flex:none;}
+  .legend{flex:1; min-width:200px; font-size:13px;}
+  .legend .row{display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1px dashed var(--line);}
+  .legend .dot{width:10px; height:10px; border-radius:3px; flex:none;}
+  .legend .l-name{font-weight:600; min-width:60px;}
+  .legend .l-score{font-weight:800; color:var(--teal); margin-left:auto;}
+  .scorebar{display:grid; grid-template-columns:90px 1fr 42px; align-items:center; gap:10px; margin-top:9px;}
+  .scorebar .s-name{font-size:13px; font-weight:600;}
+  .scorebar .track{height:10px; background:var(--silver); border-radius:999px; overflow:hidden;}
+  .scorebar .track i{display:block; height:100%; border-radius:999px;}
+  .scorebar .s-val{font-size:13px; font-weight:800; text-align:right; color:var(--teal);}
+  .c-low{background:var(--red);} .c-mid{background:var(--amber);} .c-hi{background:var(--green);} .c-teal{background:var(--teal2);}
+  .weak-badge{display:inline-block; background:var(--red-soft); color:var(--red); font-size:12.5px; font-weight:700; border-radius:999px; padding:4px 14px; margin-top:12px;}
+  .sug{border-radius:10px; padding:12px 14px; margin-top:10px; border:1.5px solid;}
+  .sug.improve{background:var(--red-soft); border-color:var(--red);}
+  .sug.consolidate{background:var(--green-soft); border-color:var(--green);}
+  .sug .s-head{display:flex; align-items:center; gap:8px; font-weight:700; font-size:13.5px;}
+  .sug .s-tag{font-size:11px; border-radius:999px; padding:1px 9px; background:rgba(255,255,255,.75); color:var(--grey);}
+  .sug.improve .s-head{color:var(--red);} .sug.consolidate .s-head{color:var(--green);}
+  .sug .s-desc{font-size:12.5px; color:var(--ink); margin-top:5px; opacity:.9;}
+  .chal{display:flex; gap:10px; padding:9px 0; border-bottom:1px dashed var(--line); font-size:13px; align-items:flex-start;}
+  .chal .ic{flex:none; width:20px; height:20px; border-radius:50%; background:var(--amber-soft); color:#9A6A16; font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:800;}
+  .values{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;}
+  @media(max-width:900px){.values{grid-template-columns:1fr;}}
+  .val{border:1.5px solid var(--line); border-radius:10px; padding:12px;}
+  .val .v-t{font-size:12px; font-weight:700; color:var(--teal); margin-bottom:5px;}
+  .val .v-d{font-size:12.5px; color:var(--ink);}
+  .actions{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  @media(max-width:900px){.actions{grid-template-columns:1fr;}}
+  .act{border:1.5px solid var(--teal2); border-radius:10px; padding:12px; background:var(--teal-soft);}
+  .act .a-n{font-size:20px; font-weight:800; color:var(--teal2);}
+  .act .a-t{font-size:13px; font-weight:700; margin-top:2px;}
+  .foot-note{margin-top:16px; font-size:12px; color:var(--grey); text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head" id="headBox"></div>
+
+  <div class="summary" id="summaryBox"></div>
+
+  <div class="grid">
+    <div class="card">
+      <h2><span class="num">01</span>五关诊断雷达</h2>
+      <div class="radar-wrap">
+        <svg id="radar" width="330" height="300" viewBox="0 0 330 300"></svg>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div id="weakBox"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">02</span>五关评分</h2>
+      <div id="bars"></div>
+      <div id="verdicts" style="margin-top:10px; font-size:12.5px; color:var(--grey);"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2><span class="num">03</span>改进建议 <span style="font-weight:400;font-size:12px;color:var(--grey);margin-left:auto;">改进型 = 影响落地，必须做</span></h2>
+      <div id="improveBox"></div>
+      <h2 style="margin-top:16px;"><span class="num">04</span>巩固建议 <span style="font-weight:400;font-size:12px;color:var(--grey);margin-left:auto;">巩固型 = 锦上添花</span></h2>
+      <div id="consolidateBox"></div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2><span class="num">05</span>评委最可能质疑的点</h2>
+        <div id="chalBox"></div>
+      </div>
+      <div class="card" style="margin-top:16px;">
+        <h2><span class="num">06</span>三层价值</h2>
+        <div class="values" id="valBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h2><span class="num">07</span>下一步行动</h2>
+    <div class="actions" id="actBox"></div>
+  </div>
+
+  <div class="foot-note">本页为专家评审建议 · 由「青创领航员」专家生成 · 评审结论可随项目进展更新</div>
+</div>
+
+<script>
+window.__VIS__ = {"project": "大展红途", "subtitle": "井冈山红色研学智能导览系统 · 专家评审建议", "date": "2026-11-16", "meta": [{"k": "赛道", "v": "课程路演大赛"}, {"k": "当前阶段", "v": "V2 原型完成 / 零真实客流"}, {"k": "团队", "v": "5 名软件工程本科生 + 1 指导教师"}, {"k": "已有资产", "v": "3 点位 · 37 条语料 · 34 项用例 · 10 任务模板"}], "summary": "技术自证满分，落地验证为零。项目所有环节都跑通了「代码」，没有任何一个环节跑通过「真实」。", "gates": [{"name": "价值关", "score": 62}, {"name": "创新关", "score": 56}, {"name": "专业关", "score": 72}, {"name": "落地关", "score": 30}, {"name": "规模关", "score": 40}], "weakest": "落地关、规模关", "verdicts": [{"gate": "价值关", "level": "中", "comment": "痛点定义扎实、三层价值都讲得通，但「学校愿不愿为报告付费」仍是推断，无一位真实决策人背书。"}, {"gate": "创新关", "level": "中", "comment": "「架构层无法编造」是真差异，但检索仍是关键词+字面相似度，三角色共用一套语料，护城河能否被复制未验证。"}, {"gate": "专业关", "level": "较高", "comment": "TAM/SAM/SOM 三层口径、双渠道收入、7 类风险矩阵、财务测算口径齐全，学生项目里属少见，是当前最强的一关。"}, {"gate": "落地关", "level": "弱", "comment": "0 真实学生、0 真实教师、0 次实地勘察、0 份签约意向。40 分钟动线是设计出来的，从未测过。"}, {"gate": "规模关", "level": "偏弱", "comment": "语料建设 4–6 周/点位是壁垒也是瓶颈，8–10 点位意味着 40–60 周纯内容工时，5 人团队扛不住。"}], "improve": [{"title": "48 小时内跑一次「零成本真实测试」", "gate": "落地关", "desc": "找本院 10–15 名同学，用手机在校园里模拟走一遍 40 分钟链路，记录真实完成率、卡点在哪、平均提几个问题。不需要去井冈山，目的是把「设计态」变成「运行态」，拿到第一份真实闭环记录。"}, {"title": "去一次现场，哪怕只去黄洋界", "gate": "落地关", "desc": "点位勘察至今仍在「计划中」。实地测三件事：山区真实网络、学生走完动线的实际停留时长、现场现有讲解方式。这是评委一句「你去过吗」就能击穿的地方。"}, {"title": "问 1 所学校一个问题：报告认不认", "gate": "落地关", "desc": "找一个中学带队老师或教务处，只问一句「如果有一份自动生成的研学报告，你们认不认、能不能进综合实践档案」。整个商业逻辑的终点押在这个假设上，但至今没有一所学校确认过。"}, {"title": "把语料建设成本量化成数字", "gate": "规模关", "desc": "现在只有「4–6 周/点位」这种模糊表述。算出：一个点位多少人天、多少工时、折多少钱。这既是护城河的证明，也是规模瓶颈的诚实交代。"}], "consolidate": [{"title": "教师端从「演示数据」改成「可录入」", "gate": "落地关", "desc": "教师端是计划书自己说的「与学生玩具的分界线」，但现在是空壳。哪怕只做一个手动导入 Excel 的最小版本，也让它从「壳」变成「能用的东西」。"}, {"title": "准备「第一份真实闭环记录」作为答辩弹药", "gate": "价值关", "desc": "哪怕只有 12 个人、完成率 58%，一份真实的、带卡点分析的测试记录，说服力远高于 34 项用例。评委问「有真实用户吗」时，这是唯一能拿出来的东西。"}, {"title": "补一张「大厂/场馆自建」的应对牌", "gate": "创新关", "desc": "风险矩阵只提了「头部平台免费 AI」，漏了最强的对手——博物馆官方自建导览。评委很可能问「场馆自己做一个怎么办」，需要一句准备好的回答。"}], "challenges": ["你去过黄洋界吗？三个点位的现场动线，你们实测过没有？", "有多少真实学生用过？任务完成率是多少？", "凭什么一所学校要为一个学生团队的产品付费？你们有主体资质签合同吗？", "大厂免费做一个 AI 讲解，你们还剩什么？", "这份报告学校认吗？真能进综合实践档案吗？"], "values": {"技术": "把「AI 不许乱说」从提示词层拉到架构层：检索锚定 + 拒答兜底，让模型「拿不到材料就编不出来」。这是可在严肃内容场景复用的工程方法，不依赖模型能力。", "商业": "交付物从「导览播放」升级为「可归档研学报告」，把产品从可有可无的辅助工具，变成嵌进学校综合实践评价流程的必需环节，替换成本显著高于一般工具软件。", "社会": "让红色研学从「到此一游」变成「有证据的学习」。37 条逐条带官方出处的语料，本身就是一份可复用的地方红色教育资源。"}, "actions": ["今天起 48 小时内：组织 10–15 人校园模拟走查，产出第一份真实完成率数据", "本周内：给 1 所学校带队老师打电话，只验证「报告认不认」这一个假设", "本周内：把黄洋界实地勘察排进日程，哪怕只有一个人去"]};
+(function(){
+  const D = window.__VIS__;
+  const GATES = D.gates || [];
+
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function colorOf(s){ return s<40?'var(--red)':(s<70?'var(--amber)':'var(--green)'); }
+
+  document.getElementById('headBox').innerHTML =
+    '<span class="tag">专家评审建议 · 由「青创领航员」专家生成</span>'+
+    '<h1>'+esc(D.project||'')+'</h1>'+
+    '<div class="sub">'+esc(D.subtitle||'专家评审建议')+'</div>'+
+    '<div class="meta">'+(D.meta||[]).map(m=>'<span>🏷 '+esc(m.k)+'：'+esc(m.v)+'</span>').join('')+
+    (D.date?('<span>📅 '+esc(D.date)+'</span>'):'')+'</div>';
+
+  document.getElementById('summaryBox').innerHTML = '<b>总体诊断：</b>'+esc(D.summary||'');
+  document.title = (D.project||'项目')+' · 专家评审建议';
+
+  // ---- radar ----
+  (function drawRadar(){
+    const svg = document.getElementById('radar');
+    const NS='http://www.w3.org/2000/svg';
+    const cx=165, cy=145, R=105, n=GATES.length;
+    const ang=i=>(-90 + i*360/n)*Math.PI/180;
+    const pt=(i,r)=>[cx+r*Math.cos(ang(i)), cy+r*Math.sin(ang(i))];
+    let out='';
+    for(let l=1;l<=4;l++){
+      const rr=R*l/4;
+      const pts=[]; for(let i=0;i<n;i++) pts.push(pt(i,rr).join(','));
+      out+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="#E2E8EA" stroke-width="1"/>';
+    }
+    for(let i=0;i<n;i++){
+      const p=pt(i,R);
+      out+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="#E2E8EA" stroke-width="1"/>';
+      const lab=pt(i,R+18);
+      out+='<text x="'+lab[0]+'" y="'+lab[1]+'" text-anchor="middle" dominant-baseline="middle" font-size="12" fill="#5C6B73" font-weight="600">'+esc(GATES[i].name)+'</text>';
+    }
+    const dataPts=[]; for(let i=0;i<n;i++) dataPts.push(pt(i, R*(Math.min(100,Math.max(0,GATES[i].score||0))/100)).join(','));
+    out+='<polygon points="'+dataPts.join(' ')+'" fill="rgba(18,112,127,.25)" stroke="#12707F" stroke-width="2"/>';
+    for(let i=0;i<n;i++){ const p=pt(i,R*(Math.min(100,Math.max(0,GATES[i].score||0))/100)); out+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="#12707F"/>'; }
+    svg.innerHTML=out;
+  })();
+
+  document.getElementById('legend').innerHTML = GATES.map(g=>{
+    const s=Math.min(100,Math.max(0,g.score||0));
+    return '<div class="row"><span class="dot" style="background:'+colorOf(s)+'"></span><span class="l-name">'+esc(g.name)+'</span><span class="l-score">'+s+'</span></div>';
+  }).join('');
+
+  if(D.weakest){
+    document.getElementById('weakBox').innerHTML = '<span class="weak-badge">⚠ 最弱关：'+esc(D.weakest)+' —— 优先攻坚</span>';
+  }
+
+  document.getElementById('bars').innerHTML = GATES.map(g=>{
+    const s=Math.min(100,Math.max(0,g.score||0));
+    return '<div class="scorebar"><span class="s-name">'+esc(g.name)+'</span><div class="track"><i style="width:'+s+'%;background:'+colorOf(s)+'"></i></div><span class="s-val">'+s+'</span></div>';
+  }).join('');
+
+  document.getElementById('verdicts').innerHTML = (D.verdicts||[]).map(v=>'<div style="padding:6px 0;border-bottom:1px dashed var(--line);"><b>'+esc(v.gate)+'（'+esc(v.level||'')+'）：</b>'+esc(v.comment||'')+'</div>').join('');
+
+  document.getElementById('improveBox').innerHTML = (D.improve||[]).map(s=>'<div class="sug improve"><div class="s-head">🔧 '+esc(s.title)+'<span class="s-tag">'+esc(s.gate||'')+'</span></div><div class="s-desc">'+esc(s.desc||'')+'</div></div>').join('') || '<div style="color:var(--grey);font-size:13px;">暂无</div>';
+
+  document.getElementById('consolidateBox').innerHTML = (D.consolidate||[]).map(s=>'<div class="sug consolidate"><div class="s-head">✨ '+esc(s.title)+'<span class="s-tag">'+esc(s.gate||'')+'</span></div><div class="s-desc">'+esc(s.desc||'')+'</div></div>').join('') || '<div style="color:var(--grey);font-size:13px;">暂无</div>';
+
+  document.getElementById('chalBox').innerHTML = (D.challenges||[]).map(c=>'<div class="chal"><span class="ic">!</span><span>'+esc(c)+'</span></div>').join('') || '<div style="color:var(--grey);font-size:13px;">暂无</div>';
+
+  const V=D.values||{};
+  document.getElementById('valBox').innerHTML =
+    '<div class="val"><div class="v-t">技术价值</div><div class="v-d">'+esc(V.技术||V.tech||'—')+'</div></div>'+
+    '<div class="val"><div class="v-t">商业价值</div><div class="v-d">'+esc(V.商业||V.biz||'—')+'</div></div>'+
+    '<div class="val"><div class="v-t">社会价值</div><div class="v-d">'+esc(V.社会||V.social||'—')+'</div></div>';
+
+  document.getElementById('actBox').innerHTML = (D.actions||[]).map((a,i)=>'<div class="act"><div class="a-n">'+(i+1)+'</div><div class="a-t">'+esc(a)+'</div></div>').join('');
+})();
+</script>
+</body>
+</html>
