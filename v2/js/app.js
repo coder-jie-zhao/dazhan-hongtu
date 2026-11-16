@@ -214,6 +214,9 @@
     toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2200);
   }
 
+  // 演示导览复用与截图模式相同的种子数据，避免另一套演示数据走样
+  DZHT.core.seedDemo = seedDemo;
+
   /* ---------- 全局错误兜底 ---------- */
   root.addEventListener("error", function (e) {
     console.error("[global error]", e.error || e.message);

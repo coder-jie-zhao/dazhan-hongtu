@@ -914,3 +914,48 @@ body.shot .hero-cloud, body.shot .hero-mist { animation: none; }
 body.shot .typing span, body.shot .retrieving .spin, body.shot .ar-hero-scan,
 body.shot .type-cursor, body.shot .home-scroll-hint span, body.shot .locate-dot { animation: none; }
 body.shot .skeleton::after { animation: none; }
+
+/* =========================================================================
+   演示辅助：拒答解释卡 + 导览/自检浮层
+   一律用明示的「演示」措辞，不伪装成真实学生数据。
+   ========================================================================= */
+.sugg-redline { border-color: #A62B2E; color: #A62B2E; }
+
+.refusal-explain {
+  margin: 12px 14px;
+  padding: 11px 14px;
+  border-left: 3px solid #A62B2E;
+  background: #FBF1EC;
+  border-radius: 0 10px 10px 0;
+  font-size: 12px;
+  line-height: 1.75;
+  color: #5A4740;
+}
+.re-head { display: flex; align-items: center; gap: 6px; color: #A62B2E; font-size: 13px; }
+.re-flag { font-size: 14px; }
+.re-close {
+  margin-left: auto; border: 0; background: none;
+  font-size: 18px; line-height: 1; padding: 0 2px; color: #A88F86; cursor: pointer;
+}
+.re-body { margin-top: 5px; }
+.re-from { display: block; margin-top: 6px; font-size: 11px; color: #9B857D; }
+
+.demo-banner {
+  position: fixed; left: 50%; bottom: 78px; transform: translateX(-50%);
+  width: min(92vw, 420px); z-index: 9999;
+  background: #FFFFFF; border: 1px solid #E6DCD2; border-radius: 14px;
+  box-shadow: 0 10px 36px rgba(27, 48, 73, .16);
+  padding: 12px 14px;
+}
+.db-step { font-size: 11px; letter-spacing: .08em; font-weight: 600; color: #A62B2E; }
+.db-title { margin-top: 4px; font-size: 16px; font-weight: 700; color: #1B3049; }
+.db-text { margin-top: 4px; font-size: 12px; line-height: 1.6; color: #6B625B; }
+.db-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+.db-next, .db-quit { border: 0; border-radius: 999px; padding: 6px 14px; font-size: 12px; cursor: pointer; }
+.db-next { background: #A62B2E; color: #FFFFFF; }
+.db-quit { background: #F2ECE5; color: #6B625B; }
+.db-item { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 13px; color: #3D3630; }
+.db-mark { font-weight: 700; }
+.db-item.ok .db-mark { color: #1F7A44; }
+.db-item.no .db-mark { color: #C0473F; }
+.db-foot { margin-top: 6px; font-size: 11px; color: #9B857D; }

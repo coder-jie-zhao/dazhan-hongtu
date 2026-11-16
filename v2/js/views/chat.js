@@ -21,6 +21,10 @@
     });
   }
 
+  // 红线演示题：命中「评价」超纲词，在线/离线都必定拒答。
+  // 明示为演示入口，不伪装成学生的真实提问。
+  var REDLINE_Q = "评价一下当时的红军将领";
+
   var C = {
     data: null,
     role: "讲解员",
@@ -80,10 +84,15 @@
   /* ---------- 推荐问题 ---------- */
   function renderSuggestions() {
     var p = currentPoint();
-    var list = (p && p.offline) ? p.offline.slice(0, 3) : [];
-    C.el.sugg.innerHTML = list.map(function (q) {
-      return '<button class="sugg" data-q="' + esc(q) + '">' + esc(q) + '</button>';
-    }).join("");
+    // 只放 2 个推荐问题：390px 屏幕上要给红线演示按钮留出可见位置，
+    // 4 个 chip 会把最后一个挤出横向滚动区，现场根本点不到。
+    var list = (p && p.offline) ? p.offline.slice(0, 2) : [];
+    // 红线按钮放第一位：390px 屏幕上它是演示关键入口，必须无条件可见可点。
+    C.el.sugg.innerHTML =
+      '<button class="sugg sugg-redline" data-redline="1" title="演示：看系统如何守住史料边界">⚑ 试试红线题</button>' +
+      list.map(function (q) {
+        return '<button class="sugg" data-q="' + esc(q) + '">' + esc(q) + '</button>';
+      }).join("");
   }
 
   /* ---------- 在线/离线探测 ---------- */
@@ -213,10 +222,30 @@
       if (s && uniqSources.indexOf(s) < 0) uniqSources.push(s);
     });
     addAiMsg(C.role, res.answer, uniqSources, res.refusal, true);
-    if (res.mode === "offline" && !res.refusal) {
+    if (res.refusal) {
+      addRefusalExplain();
+    } else if (res.mode === "offline" || res.mode === "offline-spoken" || res.mode === "offline-retrieval") {
       addSystem("当前为离线讲解模式（回答来自已审核史料库）");
     }
     C.busy = false;
+  }
+
+  /**
+   * 拒答之后的解释卡 —— 把「它不会答」翻译成「它守规矩」。
+   * 内容引用项目计划书的内容安全约束，不新增任何史实判断。
+   */
+  function addRefusalExplain() {
+    var d = document.createElement("div");
+    d.className = "refusal-explain";
+    d.innerHTML =
+      '<div class="re-head"><span class="re-flag">⚑</span><b>为什么它不回答？</b>' +
+      '<button class="re-close" aria-label="收起">×</button></div>' +
+      '<div class="re-body">红色内容的史实错误不只是产品缺陷，而是政治风险。<br />' +
+      '红途只从已审核史料取材；涉及人物评价、景区服务、无史料依据的推演，一律拒答。<br />' +
+      '<span class="re-from">—— 项目计划书 · 内容安全约束</span></div>';
+    d.querySelector(".re-close").addEventListener("click", function () { d.remove(); });
+    C.el.body.appendChild(d);
+    scrollChat();
   }
 
   /* ---------- 三角色并排对比 ---------- */
@@ -287,6 +316,12 @@
     });
 
     C.el.sugg.addEventListener("click", function (e) {
+      var red = e.target.closest("[data-redline]");
+      if (red) {
+        C.el.input.value = "";
+        sendQuestion(REDLINE_Q);
+        return;
+      }
       var s = e.target.closest("[data-q]");
       if (!s) return;
       sendQuestion(s.getAttribute("data-q"));

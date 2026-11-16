@@ -118,6 +118,8 @@
   DZHT.views.selftest = {
     init: init,
     bind: bind,
+    // 供「演示前检查」复用：跑同一份生产检索实现
+    runAll: runAll,
     onEnter: function () {
       if (!C.results) runAll();
       else render();
