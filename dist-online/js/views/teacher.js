@@ -110,6 +110,12 @@
 
   function renderTools() {
     C.el.tools.innerHTML =
+      '<button class="tool-card card-tap" data-tool="check">' +
+        '<span class="tc-icon">◉</span><div class="tc-title">演示前检查</div>' +
+        '<div class="tc-desc">30 秒验三件套</div></button>' +
+      '<button class="tool-card card-tap" data-tool="tour">' +
+        '<span class="tc-icon">▶</span><div class="tc-title">演示导览</div>' +
+        '<div class="tc-desc">走一遍 90 秒闭环</div></button>' +
       '<button class="tool-card card-tap" data-nav="audit">' +
         '<span class="tc-icon">⌘</span><div class="tc-title">审核管线</div>' +
         '<div class="tc-desc">内容安全架构</div></button>' +
@@ -181,6 +187,13 @@
     });
 
     C.el.tools.addEventListener("click", function (e) {
+      var tool = e.target.closest("[data-tool]");
+      if (tool) {
+        var kind = tool.getAttribute("data-tool");
+        if (kind === "check" && DZHT.core.demo) DZHT.core.demo.check();
+        if (kind === "tour" && DZHT.core.demo) DZHT.core.demo.start();
+        return;
+      }
       var t = e.target.closest("[data-nav]");
       if (!t) return;
       DZHT.core.router.go(t.getAttribute("data-nav"));
